@@ -1,39 +1,72 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roger Almeida - Desenvolvedor Full Stack</title>
+    <title>Roger Almeida - Desenvolvedor web</title>
+    <meta name="description" content="Portfólio profissional de Roger Almeida - Desenvolvedor, Contador e musico.">
     
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- AOS Animation Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
-</head>
+</head> 
 <body>
-    <div class="scroll-progress">
-        <div class="scroll-progress-bar"></div>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader">
+            <div class="loader-text">Carregando...</div>
+            <div class="loader-bar">
+                <div class="loader-progress"></div>
+            </div>
+        </div>
     </div>
 
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress">
+        <div class="scroll-progress-bar"></div>
+    </div>      
+
+    <!-- Custom Cursor -->
     <div class="cursor"></div>
     <div class="cursor-follower"></div>
 
+    <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="#" class="nav-logo">
-                <span class="logo-text">Roger</span><span class="logo-dot">.</span>
+                <span class="logo-text">Roger</span>
+                <span class="logo-dot">.</span>
             </a>
             
             <ul class="nav-menu" id="nav-menu">
-                <li class="nav-item"><a href="#inicio" class="nav-link">Início</a></li>
-                <li class="nav-item"><a href="#sobre" class="nav-link">Sobre</a></li>
-                <li class="nav-item"><a href="#habilidades" class="nav-link">Habilidades</a></li>
-                <li class="nav-item"><a href="#experiencia" class="nav-link">Experiência</a></li>
-                <li class="nav-item"><a href="#projetos" class="nav-link">Projetos</a></li>
-                <li class="nav-item"><a href="#contato" class="nav-link">Contato</a></li>
+                <li class="nav-item">
+                    <a href="#inicio" class="nav-link">Início</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#sobre" class="nav-link">Sobre</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#habilidades" class="nav-link">Habilidades</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#experiencia" class="nav-link">Experiência</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#projetos" class="nav-link">Projetos</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#contato" class="nav-link">Contato</a>
+                </li>
             </ul>
 
             <div class="nav-toggle" id="nav-toggle">
@@ -42,42 +75,45 @@
                 <span class="bar"></span>
             </div>
 
-            <button class="theme-toggle" id="theme-toggle" aria-label="Alternar Tema">
+            <button class="theme-toggle" id="theme-toggle">
                 <i class="fas fa-moon"></i>
             </button>
         </div>
     </nav>
 
+    <!-- Hero Section -->
     <section id="inicio" class="hero">
         <div class="hero-background">
-            <canvas id="particles-canvas"></canvas>
+            <div class="particles" id="particles"></div>
         </div>
         
         <div class="hero-content">
-            <div class="hero-text" data-aos="fade-up" data-aos-delay="100">
+            <div class="hero-text" data-aos="fade-up" data-aos-delay="200">
                 <h1 class="hero-title">
                     Olá, eu sou <span class="highlight">Roger Almeida</span>
                 </h1>
                 <div class="hero-subtitle">
-                    <span id="typing-text"></span><span class="cursor-blink">|</span>
+                    <span id="typing-text"></span>
+                    <span class="cursor-blink">|</span>
                 </div>
                 <p class="hero-description">
-                    Transformando complexidade em interfaces limpas e eficientes. Foco total em experiência do usuário e performance.
-                </p>
+                    Contador e desenvolvedor iniciante buscando por oportunidades para trabalhar e ajudar quem precisa.</p>
                 <div class="hero-buttons">
                     <a href="#projetos" class="btn btn-primary">
-                        <i class="fas fa-code"></i> Ver Projetos
+                        <i class="fas fa-code"></i>
+                        Ver Projetos
                     </a>
                     <a href="#contato" class="btn btn-outline">
-                        <i class="fas fa-envelope"></i> Contato
+                        <i class="fas fa-envelope"></i>
+                        Entrar em Contato
                     </a>
                 </div>
             </div>
             
-            <div class="hero-image" data-aos="fade-left" data-aos-delay="200">
-                <div class="image-container">
-                    <img src="Eu.png" alt="Roger Silva" class="profile-image">
-                    <div class="image-glow"></div>
+            <div class="hero-image" data-aos="fade-left" data-aos-delay="400">
+    <div class="image-container">
+        <img src="Eu.png" alt="Roger Silva" class="profile-image">
+        <div class="image-glow"></div>
                 </div>
             </div>
         </div>
@@ -89,32 +125,38 @@
         </div>
     </section>
 
+    <!-- About Section -->
     <section id="sobre" class="about">
         <div class="container">
             <div class="section-header" data-aos="fade-up">
                 <h2 class="section-title">Sobre Mim</h2>
-                <p class="section-subtitle">Background técnico e criativo</p>
+                <p class="section-subtitle">Conheça um pouco da minha história</p>
             </div>
 
             <div class="about-content">
                 <div class="about-text" data-aos="fade-right">
                     <p>
-                        Desenvolvedor Full Stack focado na construção de arquiteturas escaláveis. 
-                        Combino a precisão da minha formação em contabilidade com a criatividade da música 
-                        para entregar código limpo e interfaces intuitivas.
+                        Sou um desenvolvedor web aprendendo todos os dias, estou no 6º periodo de contabilidade e com alguns projetos
+                         de desenvolvidos e sempre criando soluções inovadoras. Minha paixão pela tecnologia começou cedo, e desde 
+                        então venho me dedicando a aprender e dominar as mais modernas tecnologias do mercado.
+                    </p>
+                    <p>
+                        Além da programação, sou músico e contador, o que me proporciona uma visão única 
+                        sobre criatividade, precisão e organização - qualidades que aplico em todos os 
+                        meus projetos de desenvolvimento.
                     </p>
                     <div class="about-stats">
                         <div class="stat">
-                            <span class="stat-number" data-count="50">0</span>
-                            <span class="stat-label">Projetos</span>
+                            <span class="stat-number" data-count="5">0</span>
+                            <span class="stat-label">Projetos Concluídos</span>
                         </div>
                         <div class="stat">
-                            <span class="stat-number" data-count="3">0</span>
-                            <span class="stat-label">Anos Exp.</span>
+                            <span class="stat-number" data-count="1">0</span>
+                            <span class="stat-label">Anos de Experiência</span>
                         </div>
                         <div class="stat">
-                            <span class="stat-number" data-count="25">0</span>
-                            <span class="stat-label">Clientes</span>
+                            <span class="stat-number" data-count="5">0</span>
+                            <span class="stat-label">Clientes Satisfeitos</span>
                         </div>
                     </div>
                 </div>
@@ -124,8 +166,8 @@
                         <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=500&h=600&fit=crop" alt="Workspace">
                         <div class="image-overlay">
                             <div class="overlay-content">
-                                <i class="fas fa-terminal"></i>
-                                <p>Code is Poetry</p>
+                                <i class="fas fa-code"></i>
+                                <p>Sempre aprendendo</p>
                             </div>
                         </div>
                     </div>
@@ -134,51 +176,111 @@
         </div>
     </section>
 
+    <!-- Skills Section -->
     <section id="habilidades" class="skills">
         <div class="container">
             <div class="section-header" data-aos="fade-up">
-                <h2 class="section-title">Tech Stack</h2>
-                <p class="section-subtitle">Ferramentas e tecnologias</p>
+                <h2 class="section-title">Habilidades</h2>
+                <p class="section-subtitle">Tecnologias que domino</p>
             </div>
 
             <div class="skills-content">
                 <div class="skills-categories">
-                    <div class="skill-category" data-aos="fade-up">
+                    <div class="skill-category" data-aos="fade-up" data-aos-delay="100">
                         <h3>Frontend</h3>
                         <div class="skills-list">
                             <div class="skill-item">
                                 <div class="skill-info">
-                                    <span class="skill-name">HTML5 / CSS3</span>
-                                    <span class="skill-percentage">95%</span>
+                                    <span class="skill-name">HTML5</span>
+                                    <span class="skill-percentage">30%</span>
                                 </div>
-                                <div class="skill-bar"><div class="skill-progress" data-width="95"></div></div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" data-width="30"></div>
+                                </div>
                             </div>
                             <div class="skill-item">
                                 <div class="skill-info">
-                                    <span class="skill-name">React.js</span>
-                                    <span class="skill-percentage">85%</span>
+                                    <span class="skill-name">CSS5</span>
+                                    <span class="skill-percentage">20%</span>
                                 </div>
-                                <div class="skill-bar"><div class="skill-progress" data-width="85"></div></div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" data-width="20"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span class="skill-name">JavaScript</span>
+                                    <span class="skill-percentage">10%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" data-width="10"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span class="skill-name">React</span>
+                                    <span class="skill-percentage">80%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" data-width="80"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="skill-category" data-aos="fade-up" data-aos-delay="100">
+                    <div class="skill-category" data-aos="fade-up" data-aos-delay="200">
                         <h3>Backend</h3>
                         <div class="skills-list">
                             <div class="skill-item">
                                 <div class="skill-info">
                                     <span class="skill-name">Node.js</span>
-                                    <span class="skill-percentage">80%</span>
+                                    <span class="skill-percentage">75%</span>
                                 </div>
-                                <div class="skill-bar"><div class="skill-progress" data-width="80"></div></div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" data-width="75"></div>
+                                </div>
                             </div>
                             <div class="skill-item">
                                 <div class="skill-info">
                                     <span class="skill-name">Python</span>
-                                    <span class="skill-percentage">70%</span>
+                                    <span class="skill-percentage">10%</span>
                                 </div>
-                                <div class="skill-bar"><div class="skill-progress" data-width="70"></div></div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" data-width="10"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span class="skill-name">MongoDB</span>
+                                    <span class="skill-percentage">65%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" data-width="65"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-category" data-aos="fade-up" data-aos-delay="300">
+                        <h3>Ferramentas</h3>
+                        <div class="skills-list">
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span class="skill-name">Git</span>
+                                    <span class="skill-percentage">85%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" data-width="85"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span class="skill-name">Figma</span>
+                                    <span class="skill-percentage">75%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" data-width="75"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -187,78 +289,178 @@
         </div>
     </section>
 
+    <!-- Certificates Section -->
+    <section id="certificados" class="certificates">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-title">Certificados</h2>
+                <p class="section-subtitle">Minhas conquistas profissionais</p>
+            </div>
+
+            <div class="certificates-grid">
+                <div class="certificate-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="certificate-image">
+                        <img src="Rog\tudo\Certificado pgn frente.png" alt="Certificado 1">
+                    </div>
+                    <div class="certificate-content">
+                        <h3>Desenvolvimento Web Completo</h3>
+                        <p>Udemy - 2023</p>
+                    </div>
+                </div>
+
+                <div class="certificate-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="certificate-image">
+                        <img src="/assets/images/certificado2.jpg" alt="Certificado 2">
+                    </div>
+                    <div class="certificate-content">
+                        <h3>React Avançado</h3>
+                        <p>Udemy - 2023</p>
+                    </div>
+                </div>
+
+                <div class="certificate-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="certificate-image">
+                        <img src="/assets/images/certificado3.jpg" alt="Certificado 3">
+                    </div>
+                    <div class="certificate-content">
+                        <h3>Node.js e Express</h3>
+                        <p>Udemy - 2024</p>
+                    </div>
+                </div>
+
+                <!-- Adicione mais certificados conforme necessário -->
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+    <!-- Experience Section -->
     <section id="experiencia" class="experience">
         <div class="container">
             <div class="section-header" data-aos="fade-up">
-                <h2 class="section-title">Jornada</h2>
+                <h2 class="section-title">Experiência</h2>
+                <p class="section-subtitle">Minha jornada profissional</p>
             </div>
+
             <div class="timeline">
-                <div class="timeline-item" data-aos="fade-up">
+                <div class="timeline-item" data-aos="fade-up" data-aos-delay="100">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
                         <h3>Desenvolvedor Full Stack</h3>
                         <h4>Freelancer</h4>
                         <span class="timeline-date">2022 - Presente</span>
-                        <p>Desenvolvimento de aplicações web performáticas e APIs RESTful escaláveis.</p>
+                        <p>Desenvolvimento de aplicações web completas utilizando React, Node.js e MongoDB. Criação de interfaces responsivas e APIs RESTful.</p>
                     </div>
                 </div>
-                <div class="timeline-item" data-aos="fade-up">
+
+                <div class="timeline-item" data-aos="fade-up" data-aos-delay="200">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
                         <h3>Desenvolvedor Frontend</h3>
                         <h4>Tech Solutions</h4>
                         <span class="timeline-date">2021 - 2022</span>
-                        <p>Implementação de interfaces complexas e otimização de Core Web Vitals.</p>
+                        <p>Desenvolvimento de interfaces modernas e responsivas. Implementação de designs complexos e otimização de performance.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item" data-aos="fade-up" data-aos-delay="300">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>Contador</h3>
+                        <h4>Escritório Contábil Silva</h4>
+                        <span class="timeline-date">2019 - 2021</span>
+                        <p>Gestão contábil e fiscal de empresas. Desenvolvimento de planilhas automatizadas e sistemas de controle.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Projects Section -->
     <section id="projetos" class="projects">
         <div class="container">
             <div class="section-header" data-aos="fade-up">
                 <h2 class="section-title">Projetos</h2>
-                <p class="section-subtitle">Cases de sucesso</p>
+                <p class="section-subtitle">Alguns dos meus trabalhos recentes</p>
             </div>
 
             <div class="projects-grid">
-                <div class="project-card" data-aos="fade-up">
+                <div class="project-card" data-aos="fade-up" data-aos-delay="100">
                     <div class="project-image">
-                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&h=300&fit=crop" alt="E-commerce">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&h=300&fit=crop" alt="E-commerce Platform">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="#" class="project-link" target="_blank" aria-label="Ver Demo"><i class="fas fa-external-link-alt"></i></a>
-                                <a href="#" class="project-link" target="_blank" aria-label="Ver Código"><i class="fab fa-github"></i></a>
+                                <a href="#" class="project-link" target="_blank">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                                <a href="#" class="project-link" target="_blank">
+                                    <i class="fab fa-github"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
                     <div class="project-content">
-                        <h3>E-commerce Platform</h3>
-                        <p>Plataforma escalável com dashboard administrativo em tempo real.</p>
+                        <h3>Site de vendas</h3>
+                        <p>Site de produtos de gênero alimenticios</p>
                         <div class="project-tech">
-                            <span class="tech-tag">React</span>
-                            <span class="tech-tag">Node.js</span>
+                            <span class="tech-tag">Vercel</span>
+                            <span class="tech-tag">Supabase</span>
+                            <span class="tech-tag">Github</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="project-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="project-card" data-aos="fade-up" data-aos-delay="200">
                     <div class="project-image">
-                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&h=300&fit=crop" alt="Dashboard">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&h=300&fit=crop" alt="Dashboard Analytics">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="#" class="project-link" target="_blank"><i class="fas fa-external-link-alt"></i></a>
-                                <a href="#" class="project-link" target="_blank"><i class="fab fa-github"></i></a>
+                                <a href="#" class="project-link" target="_blank">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                                <a href="#" class="project-link" target="_blank">
+                                    <i class="fab fa-github"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
                     <div class="project-content">
-                        <h3>Analytics Dashboard</h3>
-                        <p>Visualização de dados complexos com performance otimizada.</p>
+                        <h3>Resumo expandido</h3>
+                        <p>Uma visão objetiva e direta sobre o caso da falencia da empresa worldcom
+                            
+                        </p>
                         <div class="project-tech">
                             <span class="tech-tag">Vue.js</span>
-                            <span class="tech-tag">D3.js</span>
+                            <span class="tech-tag">Chart.js</span>
+                            <span class="tech-tag">Express</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="project-image">
+                        <img src="worldcom.png" alt="Music App">
+                        <div class="project-overlay">
+                            <div class="project-links">
+                                <a href="#" class="project-link" target="_blank">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                                <a href="#" class="project-link" target="_blank">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Music Streaming App</h3>
+                        <p>Aplicativo de streaming de música com playlists personalizadas e sistema de recomendações.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">React Native</span>
+                            <span class="tech-tag">Firebase</span>
+                            <span class="tech-tag">Spotify API</span>
                         </div>
                     </div>
                 </div>
@@ -266,94 +468,110 @@
         </div>
     </section>
 
+    <!-- Contact Section -->
     <section id="contato" class="contact">
         <div class="container">
             <div class="section-header" data-aos="fade-up">
                 <h2 class="section-title">Contato</h2>
-                <p class="section-subtitle">Vamos construir algo juntos?</p>
+                <p class="section-subtitle">Vamos trabalhar juntos?</p>
             </div>
 
             <div class="contact-content">
                 <div class="contact-info" data-aos="fade-right">
-                    <div class="contact-header">
-                        <h3>Vamos Conversar</h3>
-                        <p>Tem um projeto em mente ou quer apenas trocar uma ideia? Estou disponível para novos desafios.</p>
-                    </div>
+                    <h3>Entre em contato</h3>
+                    <p>Estou sempre aberto a novas oportunidades e projetos interessantes. Vamos conversar!</p>
                     
                     <div class="contact-items">
                         <div class="contact-item">
-                            <div class="icon-box">
+                            <div class="contact-icon">
                                 <i class="fas fa-envelope"></i>
                             </div>
-                            <div class="contact-text">
-                                <span class="label">Email</span>
-                                <a href="mailto:rogeralmeida15000@gmail.com" class="value">rogeralmeida15000@gmail.com</a>
+                            <div class="contact-details">
+                                <h4>Email</h4>
+                                <p>rogeralmeida15000@gmail.com</p>
                             </div>
                         </div>
                         
                         <div class="contact-item">
-                            <div class="icon-box">
+                            <div class="contact-icon">
                                 <i class="fas fa-map-marker-alt"></i>
                             </div>
-                            <div class="contact-text">
-                                <span class="label">Localização</span>
-                                <span class="value">São Paulo, SP - Brasil</span>
+                            <div class="contact-details">
+                                <h4>Localização</h4>
+                                <p>Lavras, MG - Brasil</p>
                             </div>
                         </div>
                     </div>
-                
-                    <div class="social-wrapper">
-                        <span class="label">Minhas Redes</span>
-                        <div class="social-links">
-                            <a href="#" class="social-btn" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="#" class="social-btn" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                            <a href="#" class="social-btn" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                        </div>
+
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/in/rogercontabeis" class="social-link" target="_blank">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="social-link" target="_blank">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="social-link" target="_blank">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link" target="_blank">
+                            <i class="fab fa-instagram"></i>
+                        </a>
                     </div>
                 </div>
 
-                <!-- ✅ FORMULÁRIO CORRIGIDO COM NOMES CORRETOS -->
                 <form class="contact-form" id="contact-form" data-aos="fade-left">
                     <div class="form-group">
-                        <label for="from_name">Nome</label>
-                        <input type="text" id="from_name" name="from_name" required placeholder="Seu nome completo">
+                        <label for="name">Nome</label>
+                        <input type="text" id="name" name="name" required>
                     </div>
+                    
                     <div class="form-group">
-                        <label for="reply_to">Email</label>
-                        <input type="email" id="reply_to" name="reply_to" required placeholder="seu@email.com">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
                     </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Assunto</label>
+                        <input type="text" id="subject" name="subject" required>
+                    </div>
+                    
                     <div class="form-group">
                         <label for="message">Mensagem</label>
-                        <textarea id="message" name="message" rows="5" required placeholder="Como posso te ajudar?"></textarea>
+                        <textarea id="message" name="message" rows="5" required></textarea>
                     </div>
+                    
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-paper-plane"></i> <span>Enviar Mensagem</span>
+                        <i class="fas fa-paper-plane"></i>
+                        Enviar Mensagem
                     </button>
                 </form>
             </div>
         </div>
     </section>
 
+    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <p>&copy; 2025 Roger Silva. Todos os direitos reservados.</p>
+                <div class="footer-text">
+                    <p>&copy; 2025 Roger Almeida. Todos os direitos reservados.</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#inicio">Início</a>
+                    <a href="#sobre">Sobre</a>
+                    <a href="#projetos">Projetos</a>
+                    <a href="#contato">Contato</a>
+                </div>
             </div>
         </div>
     </footer>
 
-    <button class="back-to-top" id="back-to-top" aria-label="Voltar ao topo">
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="back-to-top">
         <i class="fas fa-chevron-up"></i>
     </button>
 
-    <!-- ✅ EMAILJS - SUBSTITUIR PELA SUA PUBLIC KEY -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script type="text/javascript">
-       (function(){
-          emailjs.init("L4ibNopK0qWP50L91"); // Public key
-       })();
-    </script>
-
+    <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="script.js"></script>
 </body>
