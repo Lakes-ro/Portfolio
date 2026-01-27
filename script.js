@@ -9,17 +9,17 @@ let isDeleting = false;
 const config = {
   typingSpeed: 100,
   deletingSpeed: 50,
-  delayBetweenWords: 2000,
+  delayBetweenWords: 4500,
   particleCount: 50,
   scrollThreshold: 100
 };
 
 // ===== TYPING ANIMATION =====
 const typingTexts = [
+  '7º periodo de contabilidade',
   'Desenvolvedor Iniciante',
-  'Contador',
+  'Criador de Soluções',
   'Músico instrumentista',
-  'Criador de Soluções'
 ];
 
 // ===== DOM ELEMENTS =====
@@ -34,8 +34,7 @@ const elements = {
   backToTop: document.getElementById('back-to-top'),
   contactForm: document.getElementById('contact-form'),
   particles: document.getElementById('particles'),
-  cursor: document.querySelector('.cursor'),
-  cursorFollower: document.querySelector('.cursor-follower')
+  cursor: document.querySelector('.cursor')
 };
 
 // ===== INITIALIZATION =====
@@ -58,36 +57,35 @@ function initializeApp() {
   initializeSkillBars();
   
   // Initialize AOS
-  AOS.init({
-    duration: 1000,
-    once: true,
-    offset: 100
-  });
+  if (typeof AOS !== 'undefined') {
+    AOS.init({
+      duration: 1000,
+      once: true,
+      offset: 100
+    });
+  }
 }
 
 // ===== LOADING SCREEN =====
 function handleLoading() {
   const loaderProgress = document.querySelector('.loader-progress');
+  if (!loaderProgress) return;
   
   // Simulate loading progress
   let progress = 0;
   const loadingInterval = setInterval(() => {
-    progress += Math.random() * 15;
+    progress += Math.random() * 20;
+    loaderProgress.style.width = `${Math.min(progress, 100)}%`;
+    
     if (progress >= 100) {
-      progress = 100;
       clearInterval(loadingInterval);
       
       setTimeout(() => {
         elements.loadingScreen.style.opacity = '0';
-        setTimeout(() => {
-          elements.loadingScreen.style.display = 'none';
-          isLoading = false;
-          document.body.style.overflow = 'visible';
-        }, 500);
+        elements.loadingScreen.style.visibility = 'hidden';
+        isLoading = false;
       }, 500);
     }
-    
-    loaderProgress.style.width = `${progress}%`;
   }, 100);
 }
 
@@ -205,7 +203,7 @@ function typeText() {
 
 // ===== SCROLL EFFECTS =====
 function initializeScrollEffects() {
-  window.addEventListener('scroll', handleScroll);
+  window.addEventListener('scroll', throttle(handleScroll, 16));
   elements.backToTop.addEventListener('click', scrollToTop);
 }
 
@@ -224,13 +222,6 @@ function handleScroll() {
   } else {
     elements.navbar.classList.remove('scrolled');
     elements.backToTop.classList.remove('visible');
-  }
-
-  // Parallax effect for hero section
-  const hero = document.querySelector('.hero');
-  if (hero) {
-    const parallaxSpeed = scrollTop * 0.5;
-    hero.style.transform = `translateY(${parallaxSpeed}px)`;
   }
 }
 
@@ -274,43 +265,27 @@ function createParticle() {
 
 // ===== CUSTOM CURSOR =====
 function initializeCustomCursor() {
-  if (!elements.cursor || !elements.cursorFollower) return;
+  if (!elements.cursor) return;
 
   let mouseX = 0;
   let mouseY = 0;
-  let cursorX = 0;
-  let cursorY = 0;
 
   document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
-  });
-
-  function animateCursor() {
-    cursorX += (mouseX - cursorX) * 0.1;
-    cursorY += (mouseY - cursorY) * 0.1;
-
     elements.cursor.style.left = `${mouseX}px`;
     elements.cursor.style.top = `${mouseY}px`;
-    elements.cursorFollower.style.left = `${cursorX}px`;
-    elements.cursorFollower.style.top = `${cursorY}px`;
-
-    requestAnimationFrame(animateCursor);
-  }
-
-  animateCursor();
+  });
 
   // Cursor hover effects
   const hoverElements = document.querySelectorAll('a, button, .project-card, .skill-item');
   hoverElements.forEach(el => {
     el.addEventListener('mouseenter', () => {
       elements.cursor.style.transform = 'scale(1.5)';
-      elements.cursorFollower.style.transform = 'scale(1.5)';
     });
 
     el.addEventListener('mouseleave', () => {
       elements.cursor.style.transform = 'scale(1)';
-      elements.cursorFollower.style.transform = 'scale(1)';
     });
   });
 }
@@ -469,23 +444,6 @@ function throttle(func, limit) {
   }
 }
 
-// ===== PERFORMANCE OPTIMIZATIONS =====
-// Optimize scroll events
-window.addEventListener('scroll', throttle(handleScroll, 16));
-
-// Preload critical images
-function preloadImages() {
-  const images = [
-    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
-    'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=500&h=600&fit=crop'
-  ];
-
-  images.forEach(src => {
-    const img = new Image();
-    img.src = src;
-  });
-}
-
 // ===== ERROR HANDLING =====
 window.addEventListener('error', (e) => {
   console.error('JavaScript Error:', e.error);
@@ -570,9 +528,6 @@ const styleSheet = document.createElement('style');
 styleSheet.textContent = notificationStyles;
 document.head.appendChild(styleSheet);
 
-// ===== INITIALIZE PRELOADING =====
-preloadImages();
-
 // ===== EXPORT FOR TESTING =====
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
@@ -583,3 +538,32 @@ if (typeof module !== 'undefined' && module.exports) {
   };
 }
 
+const contactForm = document.getElementById('contact-form');
+
+if (contactForm) {
+    contactForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Feedback visual de "enviando"
+        const submitBtn = contactForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerText;
+        submitBtn.innerText = "Enviando...";
+        submitBtn.disabled = true;
+
+        // IDs do EmailJS
+        const serviceID = 'service_1loftt6'; // Ou o ID específico do seu serviço
+        const templateID = 'template_ml7yhk';
+
+        emailjs.sendForm(serviceID, templateID, this)
+            .then(() => {
+                alert('Mensagem enviada com sucesso! Entrarei em contato em breve.');
+                contactForm.reset();
+            }, (err) => {
+                alert('Falha ao enviar: ' + JSON.stringify(err));
+            })
+            .finally(() => {
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
+            });
+    });
+}
