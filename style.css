@@ -1355,3 +1355,14 @@ textarea:focus {
 .social-icon:hover .icon-7you {
     background-color: var(--primary-color); /* Ou a cor que você usa no hover do LinkedIn */
 }
+
+.link-branco {
+    color: #ffffff !important; /* Força a cor branca */
+    text-decoration: none;     /* Remove o sublinhado se desejar */
+    transition: opacity 0.3s;
+}
+
+.link-branco:hover {
+    color: var(--primary-color) !important; /* Muda de cor ao passar o mouse para manter o feedback */
+    opacity: 0.8;
+}
