@@ -547,6 +547,8 @@ section {
   font-size: 1.125rem;
   color: var(--text-secondary);
   margin-bottom: var(--spacing-lg);
+  text-align: justify;
+    text-justify: inter-word;
 }
 
 .about-stats {
@@ -1334,4 +1336,22 @@ textarea:focus {
     color: #6c5ce7;
     font-weight: bold;
     text-transform: uppercase;
+}
+
+/* Criando o ícone personalizado da 7You */
+.icon-7you {
+    display: inline-block;
+    width: 20px; /* Mesma largura dos ícones do FontAwesome */
+    height: 20px;
+    background-color: currentColor; /* Faz o ícone herdar a cor do texto/link */
+    mask: url('https://7you.app/assets/images/logo-icon.png') no-repeat center;
+    -webkit-mask: url('https://7you.app/assets/images/logo-icon.png') no-repeat center;
+    mask-size: contain;
+    -webkit-mask-size: contain;
+    vertical-align: middle;
+}
+
+/* Efeito de hover para combinar com o resto do seu site */
+.social-icon:hover .icon-7you {
+    background-color: var(--primary-color); /* Ou a cor que você usa no hover do LinkedIn */
 }
