@@ -1366,3 +1366,80 @@ textarea:focus {
     color: var(--primary-color) !important; /* Muda de cor ao passar o mouse para manter o feedback */
     opacity: 0.8;
 }
+
+/* =========================================
+   REMOÇÃO DE CURSOR CUSTOMIZADO NO MOBILE
+   ========================================= */
+@media (max-width: 768px) {
+    /* Oculta a bolinha personalizada */
+    .cursor, 
+    .cursor-dot, 
+    .cursor-outline { 
+        display: none !important; 
+    }
+
+    /* Garante que o navegador use o sistema de toque padrão */
+    * {
+        cursor: auto !important;
+    }
+}
+
+/* =========================================
+   CORREÇÃO DE RESPONSIVIDADE E VISIBILIDADE
+   ========================================= */
+
+/* Força links de projetos a serem visíveis */
+.project-tech a, .project-tech a:visited {
+    color: #ffffff !important; /* Branco forçado */
+    text-decoration: underline;
+}
+
+/* Responsividade Mobile (Celulares) */
+@media (max-width: 768px) {
+    /* TIMELINE: Transforma em lista vertical simples */
+    .timeline::before {
+        left: 20px; /* Linha encosta na esquerda */
+    }
+    
+    .timeline-item {
+        flex-direction: column !important; /* Empilha verticalmente */
+        align-items: flex-start;
+        margin-bottom: 40px;
+    }
+    
+    .timeline-dot {
+        left: 20px; /* Bolinha na esquerda */
+        transform: translateX(-50%);
+    }
+    
+    /* Remove as margens alternadas que quebravam o layout */
+    .timeline-item:nth-child(odd) .timeline-content,
+    .timeline-item:nth-child(even) .timeline-content {
+        width: calc(100% - 50px); /* Ocupa a largura toda menos o espaço da bolinha */
+        margin-left: 50px !important;
+        margin-right: 0 !important;
+        text-align: left; /* Garante texto alinhado à esquerda */
+    }
+
+    /* GRID: Garante 1 coluna no celular */
+    .certificates-grid, .projects-grid {
+        grid-template-columns: 1fr; /* Uma coluna só */
+        padding: 0 10px;
+    }
+    
+    /* TEXTO: Ajuste de tamanho para não estourar */
+    .section-title {
+        font-size: 2rem;
+    }
+}
+
+/* Telas muito pequenas (iPhone SE, etc) */
+@media (max-width: 480px) {
+    .container {
+        padding: 0 15px; /* Reduz padding lateral */
+    }
+    
+    .hero-title {
+        font-size: 2rem; /* Diminui título gigante */
+    }
+}
