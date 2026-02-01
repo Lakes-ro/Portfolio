@@ -19,8 +19,8 @@ const typingTexts = [
   '7º periodo de contabilidade',
   'Desenvolvedor Iniciante',
   'Criador de Soluções',
-  'Adventista do Sétimo Dia',
   'Músico instrumentista',
+  'Adventista do Sétimo Dia',
 ];
 
 // ===== DOM ELEMENTS =====
@@ -314,10 +314,39 @@ function initializeAnimations() {
 }
 
 // ===== CONTACT FORM =====
+// ===== CONTACT FORM (CORRIGIDO) =====
 function initializeContactForm() {
-  if (!elements.contactForm) return;
+  const contactForm = document.getElementById('contact-form');
+  if (!contactForm) return;
 
-  elements.contactForm.addEventListener('submit', handleFormSubmit);
+  contactForm.addEventListener('submit', function(event) {
+    event.preventDefault(); // Impede o recarregamento da página
+
+    // 1. Feedback Visual (Botão Carregando)
+    const submitBtn = contactForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+    submitBtn.disabled = true;
+
+    // 2. Configuração EmailJS
+    const serviceID = 'service_1loftt6'; // Seu ID real
+    const templateID = 'template_ml7yhk'; // Seu ID real
+
+    // 3. Envio Real
+    emailjs.sendForm(serviceID, templateID, this)
+      .then(() => {
+        showNotification('Mensagem enviada com sucesso!', 'success');
+        contactForm.reset();
+      }, (err) => {
+        console.error('Erro EmailJS:', err);
+        showNotification('Erro ao enviar. Tente novamente.', 'error');
+      })
+      .finally(() => {
+        // Restaura o botão
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      });
+  });
 }
 
 async function handleFormSubmit(e) {
