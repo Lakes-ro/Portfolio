@@ -2,147 +2,128 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roger Almeida - Desenvolvedor web</title>
-    <meta name="description" content="Portfólio profissional de Roger Almeida - Desenvolvedor, Contador e musico.">
-    
-    <!-- PWA -->
-<link rel="manifest" href="/manifest.json" />
-<meta name="theme-color" content="#000000" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="default" />
-<meta name="apple-mobile-web-app-title" content="Portfólio" />
-<link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Roger Almeida | Contabilidade & Tech</title>
-
-    <link rel="icon" type="image/png" href="logo titulo.png">
-    
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-
-    <meta name="theme-color" content="#000000">
+    <meta name="description" content="Portfólio profissional de Roger Almeida — Contador, Desenvolvedor Web e Músico.">
     <meta name="author" content="Roger Almeida">
+    <meta name="theme-color" content="#6366f1">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Roger.">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="logo titulo.png">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    
+
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- AOS Animation Library -->
+
+    <!-- AOS -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
-    <!-- Custom CSS -->
+
+    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
-</head> 
+</head>
 <body>
+
     <!-- Loading Screen -->
     <div id="loading-screen">
         <div class="loader">
-            <div class="loader-text">Carregando...</div>
+            <div class="loader-text">Roger Almeida</div>
             <div class="loader-bar">
                 <div class="loader-progress"></div>
             </div>
         </div>
     </div>
 
-    <!-- Scroll Progress Bar -->
+    <!-- Scroll Progress -->
     <div class="scroll-progress">
         <div class="scroll-progress-bar"></div>
-    </div>      
+    </div>
 
-    <!-- Custom Cursor -->
+    <!-- Custom Cursor (desktop only) -->
     <div class="cursor"></div>
 
-    <!-- Navigation -->
+    <!-- ===== NAVIGATION ===== -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <a href="#" class="nav-logo">
-                <span class="logo-text">Roger</span>
-                <span class="logo-dot">.</span>
+            <a href="#inicio" class="nav-logo">
+                <span class="logo-text">Roger</span><span class="logo-dot">.</span>
             </a>
-            
+
             <ul class="nav-menu" id="nav-menu">
-    <li class="nav-item">
-        <a href="#inicio" class="nav-link">Início</a>
-    </li>
-    <li class="nav-item">
-        <a href="#sobre" class="nav-link">Sobre</a>
-    </li>
-     <li class="nav-item">
-        <a href="#projetos" class="nav-link">Projetos</a>
-    </li>
-    <li class="nav-item">
-        <a href="#habilidades" class="nav-link">Habilidades</a>
-    </li>
-    <li class="nav-item">
-        <a href="#certificados" class="nav-link">Certificados</a>
-    </li>
-    <li class="nav-item">
-        <a href="#experiencia" class="nav-link">Experiência</a>
-    </li>
-   
-    <li class="nav-item">
-        <a href="#contato" class="nav-link">Contato</a>
-    </li>
-</ul>
-            <div class="nav-toggle" id="nav-toggle">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
+                <li class="nav-item"><a href="#inicio"      class="nav-link">Início</a></li>
+                <li class="nav-item"><a href="#sobre"       class="nav-link">Sobre</a></li>
+                <li class="nav-item"><a href="#projetos"    class="nav-link">Projetos</a></li>
+                <li class="nav-item"><a href="#habilidades" class="nav-link">Habilidades</a></li>
+                <li class="nav-item"><a href="#certificados"class="nav-link">Certificados</a></li>
+                <li class="nav-item"><a href="#experiencia" class="nav-link">Experiência</a></li>
+                <li class="nav-item"><a href="#contato"     class="nav-link">Contato</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Alternar tema">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="nav-toggle" id="nav-toggle" aria-label="Abrir menu" role="button" tabindex="0">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
             </div>
-            <button class="theme-toggle" id="theme-toggle">
-                <i class="fas fa-moon"></i>
-            </button>
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- ===== HERO ===== -->
     <section id="inicio" class="hero">
-        <div class="hero-background">
-            <div class="particles" id="particles"></div>
-        </div>
-        
+        <div class="hero-background"></div>
+
         <div class="hero-content">
-            <div class="hero-text" data-aos="fade-up" data-aos-delay="200">
-                <h1 class="hero-title">
-                    Olá, eu sou <span class="highlight">Roger Almeida</span>
-                </h1>
-                <div class="hero-subtitle">
-                    <span id="typing-text"></span>
-                    <span class="cursor-blink">|</span>
-                </div>
-                <p class="hero-description">
-                    Contador e desenvolvedor iniciante buscando por oportunidades para trabalhar e ajudar quem precisa.</p>
-                <div class="hero-buttons">
-                    <a href="#projetos" class="btn btn-primary">
-                        <i class="fas fa-code"></i>
-                        Ver Projetos
-                    </a>
-                    <a href="#contato" class="btn btn-outline">
-                        <i class="fas fa-envelope"></i>
-                        Entrar em Contato
-                    </a>
-                </div>
-            </div>
-            
-            <div class="hero-image" data-aos="fade-left" data-aos-delay="400">
+            <!-- Imagem vem primeiro no DOM → order CSS inverte no desktop -->
+            <div class="hero-image" data-aos="fade-up" data-aos-delay="100">
                 <div class="image-container">
-                    <img src="Eu.png" alt="Roger Silva" class="profile-image">
+                    <img src="Eu.png" alt="Foto de Roger Almeida" class="profile-image">
                     <div class="image-glow"></div>
                 </div>
             </div>
+
+            <div class="hero-text" data-aos="fade-up" data-aos-delay="200">
+                <h1 class="hero-title">
+                    Olá, eu sou<br><span class="highlight">Roger Almeida</span>
+                </h1>
+                <div class="hero-subtitle">
+                    <span id="typing-text"></span><span class="cursor-blink">|</span>
+                </div>
+                <p class="hero-description">
+                    Contador e desenvolvedor web em ascensão — transformando dados em decisões e ideias em soluções digitais.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#projetos" class="btn btn-primary">
+                        <i class="fas fa-code"></i> Ver Projetos
+                    </a>
+                    <a href="#contato" class="btn btn-outline">
+                        <i class="fas fa-envelope"></i> Contato
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="scroll-indicator">
+
+        <div class="scroll-indicator" aria-hidden="true">
             <div class="scroll-arrow">
                 <i class="fas fa-chevron-down"></i>
             </div>
         </div>
     </section>
 
-    <!-- About Section -->
+    <!-- ===== SOBRE ===== -->
     <section id="sobre" class="about">
         <div class="container">
             <div class="section-header" data-aos="fade-up">
@@ -152,14 +133,13 @@
             <div class="about-content">
                 <div class="about-text" data-aos="fade-right">
                     <p>
-                       Acadêmico de Ciências Contábeis e Desenvolvedor Web em ascensão. 
-                       Meu foco está na intersecção entre a gestão financeira e a tecnologia, 
-                       aplicando o rigor da contabilidade na construção de soluções digitais organizadas e eficientes.
+                        Acadêmico de Ciências Contábeis e Desenvolvedor Web em ascensão.
+                        Meu foco está na intersecção entre gestão financeira e tecnologia,
+                        aplicando o rigor da contabilidade na construção de soluções digitais organizadas e eficientes.
                     </p>
                     <p>
-                       Acredito na força dos fundamentos: processos bem estruturados e códigos limpos.
-                       Além da lógica, trago da música a disciplina e a criatividade necessárias para resolver problemas de forma inovadora.
-                       Busco transformar a complexidade dos dados em ferramentas funcionais que facilitem a tomada de decisão.
+                        Acredito na força dos fundamentos: processos bem estruturados e código limpo.
+                        Da música trago a disciplina e criatividade para resolver problemas de forma inovadora.
                     </p>
                     <div class="about-stats">
                         <div class="stat">
@@ -168,11 +148,11 @@
                         </div>
                         <div class="stat">
                             <span class="stat-number" data-count="1">0</span>
-                            <span class="stat-label">Anos de Experiência</span>
+                            <span class="stat-label">Ano de Exp.</span>
                         </div>
                         <div class="stat">
                             <span class="stat-number" data-count="5">0</span>
-                            <span class="stat-label">Clientes Satisfeitos</span>
+                            <span class="stat-label">Clientes</span>
                         </div>
                     </div>
                 </div>
@@ -191,7 +171,7 @@
         </div>
     </section>
 
-<!-- Projects Section -->
+    <!-- ===== PROJETOS ===== -->
     <section id="projetos" class="projects">
         <div class="container">
             <div class="section-header" data-aos="fade-up">
@@ -199,167 +179,167 @@
                 <p class="section-subtitle">Alguns dos meus trabalhos</p>
             </div>
             <div class="projects-grid">
+
                 <div class="project-card" data-aos="fade-up" data-aos-delay="100">
                     <div class="project-image">
-                        <img src="Vendas.png" alt="E-commerce Platform">
+                        <img src="Vendas.png" alt="Site de Vendas">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="#" class="project-link" target="_blank">
+                                <a href="https://vendas-fadminas.vercel.app/" class="project-link" target="_blank" aria-label="Ver projeto">
                                     <i class="fas fa-external-link-alt"></i>
-                                </a>
-                                <a href="#" class="project-link" target="_blank">
-                                    <i class="fab fa-github"></i>
                                 </a>
                             </div>
                         </div>
                     </div>
                     <div class="project-content">
-                        <h3>Site de vendas</h3>
-                        <p>Site de vendas em geral usado na Fadminas para propagar e realizar o controle interno.</p>
+                        <h3>Site de Vendas</h3>
+                        <p>Plataforma de vendas usada na Fadminas para controle interno e divulgação.</p>
                         <div class="project-tech">
                             <span class="tech-tag">Vercel</span>
                             <span class="tech-tag">Supabase</span>
-                            <span class="tech-tag">Github</span>
-                            <a href="https://vendas-fadminas.vercel.app/" class="link-branco" > <u>Clique para acessar este projeto</u></a>
+                            <span class="tech-tag">GitHub</span>
                         </div>
+                        <!-- ✅ LINK OK: vendas-fadminas.vercel.app -->
+                        <a href="https://vendas-fadminas.vercel.app/" class="project-cta" target="_blank">
+                            <i class="fas fa-arrow-right"></i> Acessar projeto
+                        </a>
                     </div>
                 </div>
-                <div class="project-card" data-aos="fade-up" data-aos-delay="200">
+
+                <div class="project-card" data-aos="fade-up" data-aos-delay="150">
                     <div class="project-image">
-                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&h=300&fit=crop" alt="Dashboard Analytics">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&h=300&fit=crop" alt="Gestão Financeira">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="#" class="project-link" target="_blank">
-                                    <i class="fas fa-external-link-alt"></i>
-                                </a>
-                                <a href="#" class="project-link" target="_blank">
-                                    <i class="fab fa-github"></i>
+                                <a href="#contato" class="project-link" aria-label="Solicitar acesso">
+                                    <i class="fas fa-envelope"></i>
                                 </a>
                             </div>
                         </div>
                     </div>
                     <div class="project-content">
-                        <h3>Gestão financeira</h3>
-                        <p>Um software para realizar a gestão financeira pessoal, com planejamento financeiro personalizado com a necessidade de cada cliente.</p>
+                        <h3>Gestão Financeira</h3>
+                        <p>Software para gestão financeira pessoal com planejamento personalizado por cliente.</p>
                         <div class="project-tech">
-                            <span class="tech-tag">Caso tenha interesse, só me mandar um Email.</span>
-                            
-                            <a href=""></a>
+                            <span class="tech-tag">Privado</span>
                         </div>
+                        <!-- ⚠️ TODO: Substitua o href="#contato" pelo link do projeto quando disponível -->
+                        <a href="#contato" class="project-cta">
+                            <i class="fas fa-envelope"></i> Solicitar via e-mail
+                        </a>
                     </div>
                 </div>
-                <div class="project-card" data-aos="fade-up" data-aos-delay="300">
+
+                <div class="project-card" data-aos="fade-up" data-aos-delay="200">
                     <div class="project-image">
-                        <img src="worldcom.png" alt="worldcom">
+                        <img src="worldcom.png" alt="Caso WorldCom">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="#" class="project-link" target="_blank">
+                                <a href="https://world-com-six.vercel.app/" class="project-link" target="_blank" aria-label="Ver projeto">
                                     <i class="fas fa-external-link-alt"></i>
-                                </a>
-                                <a href="#" class="project-link" target="_blank">
-                                    <i class="fab fa-github"></i>
                                 </a>
                             </div>
                         </div>
                     </div>
-                     <div class="project-content">
-                        <h3>Resumo expandido</h3>
-                        <p>Uma visão objetiva e direta sobre o caso da falencia da empresa worldcom.</p>
-                        <div class="project-tech">
-                            <span class="tech-tag">HTML</span>
-                            <span class="tech-tag">CSS</span>
-                            <span class="tech-tag">Javascript</span>
-                             <a href="https://world-com-six.vercel.app/" class="link-branco"> <u>Clique para acessar o projeto</u></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-card" data-aos="fade-up" data-aos-delay="300">
-                    <div class="project-image">
-                        <img src="Escala louvor.png" alt="Escala louvor">
-                        <div class="project-overlay">
-                            <div class="project-links">
-                                <a href="#" class="project-link" target="_blank">
-                                    <i class="fas fa-external-link-alt"></i>
-                                </a>
-                                <a href="#" class="project-link" target="_blank">
-                                    <i class="fab fa-github"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                     <div class="project-content">
-                        <h3>Escala de louvor</h3>
-                        <p>Um aplicativo de gerenciamento para o departamento de louvor das igrejas</p>
+                    <div class="project-content">
+                        <h3>Caso WorldCom</h3>
+                        <p>Análise expandida sobre a maior fraude contábil da história dos EUA.</p>
                         <div class="project-tech">
                             <span class="tech-tag">HTML</span>
                             <span class="tech-tag">CSS</span>
                             <span class="tech-tag">JavaScript</span>
                         </div>
+                        <!-- ✅ LINK OK: world-com-six.vercel.app -->
+                        <a href="https://world-com-six.vercel.app/" class="project-cta" target="_blank">
+                            <i class="fas fa-arrow-right"></i> Acessar projeto
+                        </a>
                     </div>
                 </div>
-                <div class="project-card" data-aos="fade-up" data-aos-delay="300">
+
+                <div class="project-card" data-aos="fade-up" data-aos-delay="250">
                     <div class="project-image">
-                        <img src="Pizza.png" alt="">
+                        <img src="Escala louvor.png" alt="Escala de Louvor">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="#" class="project-link" target="_blank">
-                                    <i class="fas fa-external-link-alt"></i>
-                                </a>
-                                <a href="#" class="project-link" target="_blank">
-                                    <i class="fab fa-github"></i>
-                                </a>
+                                <span class="project-link" aria-label="Em breve">
+                                    <i class="fas fa-clock"></i>
+                                </span>
                             </div>
                         </div>
                     </div>
-                     <div class="project-content">
-                        <h3>Vendas de pizza</h3>
-                        <p>A pedido do clube, desenvolvi uma pagina para ajuda-los a venderem pizza para levantar fundos para irem ao campori barretos 2027.</p>
+                    <div class="project-content">
+                        <h3>Escala de Louvor</h3>
+                        <p>Aplicativo de gerenciamento para o departamento de louvor das igrejas.</p>
                         <div class="project-tech">
                             <span class="tech-tag">HTML</span>
                             <span class="tech-tag">CSS</span>
-                            <span class="tech-tag">Javascript</span>
-                            <a href="https://aguias-vendas.vercel.app/" class="link-branco"> <u>Clique aqui e descubra essa historia</u></a>
+                            <span class="tech-tag">JavaScript</span>
                         </div>
+                        <!-- ⚠️ TODO: Substitua o href="#" pelo link do projeto quando publicado -->
+                        <a href="#" class="project-cta">
+                            <i class="fas fa-clock"></i> Em breve
+                        </a>
                     </div>
                 </div>
+
                 <div class="project-card" data-aos="fade-up" data-aos-delay="300">
                     <div class="project-image">
-                        <img src="png" alt="">
+                        <img src="Pizza.png" alt="Vendas de Pizza">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="#" class="project-link" target="_blank">
+                                <a href="https://aguias-vendas.vercel.app/" class="project-link" target="_blank" aria-label="Ver projeto">
                                     <i class="fas fa-external-link-alt"></i>
-                                </a>
-                                <a href="#" class="project-link" target="_blank">
-                                    <i class="fab fa-github"></i>
                                 </a>
                             </div>
                         </div>
                     </div>
                     <div class="project-content">
-                        <h3>Projetos futuros...</h3>
-                        <p>     </p>
+                        <h3>Vendas de Pizza</h3>
+                        <p>Página criada para o clube arrecadar fundos para o Campori Barretos 2027.</p>
                         <div class="project-tech">
-                            <span class="tech-tag"> Ideias </span>
-                            <span class="tech-tag"> Propostas?</span>
-                            <span class="tech-tag"> Me mande um email </span>
+                            <span class="tech-tag">HTML</span>
+                            <span class="tech-tag">CSS</span>
+                            <span class="tech-tag">JavaScript</span>
                         </div>
+                        <!-- ✅ LINK OK: aguias-vendas.vercel.app -->
+                        <a href="https://aguias-vendas.vercel.app/" class="project-cta" target="_blank">
+                            <i class="fas fa-arrow-right"></i> Acessar projeto
+                        </a>
                     </div>
                 </div>
+
+                <div class="project-card project-card--future" data-aos="fade-up" data-aos-delay="350">
+                    <div class="project-image project-image--future">
+                        <div class="future-icon"><i class="fas fa-lightbulb"></i></div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Projetos Futuros</h3>
+                        <p>Tem uma ideia ou proposta? Vamos conversar e construir algo juntos.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Ideias</span>
+                            <span class="tech-tag">Propostas</span>
+                        </div>
+                        <!-- ⚠️ TODO: Pode substituir por um link específico ou deixar indo para contato -->
+                        <a href="#contato" class="project-cta">
+                            <i class="fas fa-envelope"></i> Me envie um e-mail
+                        </a>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
 
-
-    <!-- Skills Section -->
+    <!-- ===== HABILIDADES ===== -->
     <section id="habilidades" class="skills">
         <div class="container">
             <div class="section-header" data-aos="fade-up">
                 <h2 class="section-title">Habilidades</h2>
-                <p class="section-subtitle">Tecnologias que domino</p>
+                <p class="section-subtitle">Tecnologias e ferramentas que utilizo</p>
             </div>
             <div class="skills-content">
                 <div class="skills-categories">
+
                     <div class="skill-category" data-aos="fade-up" data-aos-delay="100">
                         <h3>Frontend</h3>
                         <div class="skills-list">
@@ -368,39 +348,32 @@
                                     <span class="skill-name">HTML5</span>
                                     <span class="skill-percentage">30%</span>
                                 </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="30"></div>
-                                </div>
+                                <div class="skill-bar"><div class="skill-progress" data-width="30"></div></div>
                             </div>
                             <div class="skill-item">
                                 <div class="skill-info">
-                                    <span class="skill-name">CSS5</span>
+                                    <span class="skill-name">CSS3</span>
                                     <span class="skill-percentage">20%</span>
                                 </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="20"></div>
-                                </div>
+                                <div class="skill-bar"><div class="skill-progress" data-width="20"></div></div>
                             </div>
                             <div class="skill-item">
                                 <div class="skill-info">
                                     <span class="skill-name">JavaScript</span>
                                     <span class="skill-percentage">10%</span>
                                 </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="10"></div>
-                                </div>
+                                <div class="skill-bar"><div class="skill-progress" data-width="10"></div></div>
                             </div>
                             <div class="skill-item">
                                 <div class="skill-info">
-                                    <span class="skill-name">Inteligência artificial</span>
+                                    <span class="skill-name">Inteligência Artificial</span>
                                     <span class="skill-percentage">40%</span>
                                 </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="40"></div>
-                                </div>
+                                <div class="skill-bar"><div class="skill-progress" data-width="40"></div></div>
                             </div>
                         </div>
                     </div>
+
                     <div class="skill-category" data-aos="fade-up" data-aos-delay="200">
                         <h3>Backend</h3>
                         <div class="skills-list">
@@ -409,30 +382,25 @@
                                     <span class="skill-name">Supabase</span>
                                     <span class="skill-percentage">60%</span>
                                 </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="60"></div>
-                                </div>
+                                <div class="skill-bar"><div class="skill-progress" data-width="60"></div></div>
                             </div>
                             <div class="skill-item">
                                 <div class="skill-info">
-                                    <span class="skill-name">Javascript</span>
+                                    <span class="skill-name">JavaScript (Node)</span>
                                     <span class="skill-percentage">20%</span>
                                 </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="20"></div>
-                                </div>
+                                <div class="skill-bar"><div class="skill-progress" data-width="20"></div></div>
                             </div>
                             <div class="skill-item">
                                 <div class="skill-info">
-                                    <span class="skill-name">Vscode</span>
+                                    <span class="skill-name">VS Code</span>
                                     <span class="skill-percentage">65%</span>
                                 </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="65"></div>
-                                </div>
+                                <div class="skill-bar"><div class="skill-progress" data-width="65"></div></div>
                             </div>
                         </div>
                     </div>
+
                     <div class="skill-category" data-aos="fade-up" data-aos-delay="300">
                         <h3>Ferramentas</h3>
                         <div class="skills-list">
@@ -441,134 +409,117 @@
                                     <span class="skill-name">Excel</span>
                                     <span class="skill-percentage">70%</span>
                                 </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="85"></div>
-                                </div>
+                                <div class="skill-bar"><div class="skill-progress" data-width="70"></div></div>
                             </div>
-                             <div class="skill-item">
+                            <div class="skill-item">
                                 <div class="skill-info">
-                                    <span class="skill-name">APS</span>
+                                    <span class="skill-name">APS / Sistemas Contábeis</span>
                                     <span class="skill-percentage">70%</span>
                                 </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="70"></div>
-                                </div>
+                                <div class="skill-bar"><div class="skill-progress" data-width="70"></div></div>
                             </div>
                             <div class="skill-item">
                                 <div class="skill-info">
                                     <span class="skill-name">Power BI</span>
                                     <span class="skill-percentage">30%</span>
                                 </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="30"></div>
-                                </div>
+                                <div class="skill-bar"><div class="skill-progress" data-width="30"></div></div>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- ===== CERTIFICADOS ===== -->
+    <section id="certificados" class="certificates">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-title">Certificados</h2>
+                <p class="section-subtitle">Minhas conquistas profissionais</p>
+            </div>
+            <div class="certificates-grid">
 
-    <!-- Certificates Section -->
+                <a href="Certificado.pdf" target="_blank" class="certificate-card" data-aos="fade-up">
+                    <div class="card-icon"><i class="fas fa-file-pdf"></i></div>
+                    <div class="card-info">
+                        <h3>Informática para o Mundo do Trabalho</h3>
+                        <p>Prefeitura Rio das Ostras — 2019 · 150h</p>
+                        <span class="btn-view"><i class="fas fa-eye"></i> Visualizar PDF</span>
+                    </div>
+                </a>
 
-  <section id="certificados" class="certificates">
-    <div class="container">
-        <div class="section-header" data-aos="fade-up">
-            <h2 class="section-title">Certificados</h2>
-            <p class="section-subtitle">Minhas conquistas profissionais</p>
+                <a href="Certificado Iatecpdf.pdf" target="_blank" class="certificate-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card-icon"><i class="fas fa-file-pdf"></i></div>
+                    <div class="card-info">
+                        <h3>Desenvolvimento Front-End</h3>
+                        <p>IATec Academy — 2025 · 9h</p>
+                        <span class="btn-view"><i class="fas fa-eye"></i> Visualizar PDF</span>
+                    </div>
+                </a>
+
+                <a href="Certificado Udemy Ia generativa.pdf" target="_blank" class="certificate-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card-icon"><i class="fas fa-file-pdf"></i></div>
+                    <div class="card-info">
+                        <h3>IA Generativa para Finanças e Contabilidade</h3>
+                        <p>Udemy — 2026 · 3h</p>
+                        <span class="btn-view"><i class="fas fa-eye"></i> Visualizar PDF</span>
+                    </div>
+                </a>
+
+            </div>
         </div>
+    </section>
 
-        <div class="certificates-grid">
-            
-            <a href="Certificado.pdf" target="_blank" class="certificate-card" data-aos="fade-up">
-                <div class="card-icon">
-                    <i class="fas fa-file-pdf"></i>
-                </div>
-                <div class="card-info">
-                    <h3>Informática para o mundo do trabalho</h3>
-                    <p>Prefeitura Rio das ostras - 2019</p>
-                    <span class="btn-view">Visualizar PDF</span>
-                </div>
-            </a>
-
-            <a href="Certificado Iatecpdf.pdf" target="_blank" class="certificate-card" data-aos="fade-up" data-aos-delay="100">
-                <div class="card-icon">
-                    <i class="fas fa-file-pdf"></i>
-                </div>
-                <div class="card-info">
-                    <h3>Desenvolvimento Front-End</h3>
-                    <p>IATec Academy - 2025</p>
-                    <span class="btn-view">Visualizar PDF</span>
-                </div>
-            </a>
-
-            <a href="Certificado Udemy Ia generativa.pdf" target="_blank" class="certificate-card" data-aos="fade-up" data-aos-delay="200">
-                <div class="card-icon">
-                    <i class="fas fa-file-pdf"></i>
-                </div>
-                <div class="card-info">
-                    <h3>IA Generativa Finanças</h3>
-                    <p>Udemy - 2026</p>
-                    <span class="btn-view">Visualizar PDF</span>
-                </div>
-            </a>
-
-        </div> </div>
-</section>
-
-  <!-- Experience Section -->
+    <!-- ===== EXPERIÊNCIA ===== -->
     <section id="experiencia" class="experience">
         <div class="container">
             <div class="section-header" data-aos="fade-up">
                 <h2 class="section-title">Experiência</h2>
                 <p class="section-subtitle">Minha jornada profissional</p>
             </div>
-            
+
             <div class="timeline">
-                
-                <!-- Experiência 1: Escritório Contábil -->
-                 <div class="timeline-item" data-aos="fade-up" data-aos-delay="100">
+
+                <div class="timeline-item" data-aos="fade-up" data-aos-delay="100">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
-                        <h3>Escritório contábil</h3>
-                        <h4>Assistente</h4>
-                        <span class="timeline-date">2025 - Presente</span>
-                        <p>Realizando a gestão contábil de lojas e escolas e movimento diario. Lançamentos de tafifas bancarias, aplicações, resgates e reconciliação. Análise e conferencia de documentos. Desenvolvimento soluções automatizadas com sistemas e padronização. Sistemas utilzados, AASI, Dracma, Excel, PowerAutomate, Ahgora, ACS.</p>
+                        <span class="timeline-date">2025 — Presente</span>
+                        <h3>Escritório Contábil</h3>
+                        <h4>Assistente Contábil</h4>
+                        <p>Gestão contábil de lojas e escolas, lançamentos de tarifas bancárias, aplicações, resgates e reconciliação. Desenvolvimento de soluções automatizadas. Sistemas: AASI, Dracma, Excel, PowerAutomate, Ahgora, ACS.</p>
                     </div>
-                </div> <!-- FECHAMENTO CORRETO DESTA DIV -->
+                </div>
 
-                <!-- Experiência 2: Analista Fiscal -->
+                <div class="timeline-item" data-aos="fade-up" data-aos-delay="150">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">2026</span>
+                        <h3>Analista Fiscal</h3>
+                        <h4>Assistente</h4>
+                        <p>Conferência de NFS-e, controle fiscal de aluguéis e manutenção de notas sobre o regime fiscal.</p>
+                    </div>
+                </div>
+
                 <div class="timeline-item" data-aos="fade-up" data-aos-delay="200">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
-                        <h3>Analista fiscal</h3>
-                        <h4>Assistente</h4>
-                        <span class="timeline-date">2026 - 2026</span>
-                        <p>Conferencia de NFS-e, controle da parte fiscal dos alugueis e manutenção das notas sobre o regime fiscal.</p>
-                    </div>
-                </div>
-
-                <!-- Experiência 3: Almoxarifado -->
-                <div class="timeline-item" data-aos="fade-up" data-aos-delay="300">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
+                        <span class="timeline-date">2025 — 2026</span>
                         <h3>Almoxarifado</h3>
-                        <h4>Auxiliar</h4>
-                        <span class="timeline-date">2025 - 2026</span>
-                        <p>Realizando a manutenção e organização de estoques, controle de materiais e atendimento ao cliente utilizando sistemas como Dracma e Adven.tech.</p>
+                        <h4>Auxiliar de Estoque</h4>
+                        <p>Manutenção e organização de estoques, controle de materiais e atendimento. Sistemas: Dracma, Adven.tech.</p>
                     </div>
                 </div>
 
-                <!-- Experiência 4: Departamento de Pessoal -->
-                <div class="timeline-item" data-aos="fade-up" data-aos-delay="400">
+                <div class="timeline-item" data-aos="fade-up" data-aos-delay="250">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
-                        <h3>Departamento de pessoal</h3>
+                        <span class="timeline-date">2023 — 2025</span>
+                        <h3>Departamento de Pessoal</h3>
                         <h4>Assistente</h4>
-                        <span class="timeline-date">2023 - 2025</span>
-                        <p>Desenvolvimento de planilhas completas para controle interno, padronizando e realizando processos como Rescição, Admissão, Transferencias, Ferias, ASOS e utilizando o software APS.</p>
+                        <p>Planilhas de controle interno, rescisões, admissões, transferências, férias, ASOs e processos com software APS.</p>
                     </div>
                 </div>
 
@@ -576,10 +527,7 @@
         </div>
     </section>
 
-
-    
-
-    <!-- Contact Section -->
+    <!-- ===== CONTATO ===== -->
     <section id="contato" class="contact">
         <div class="container">
             <div class="section-header" data-aos="fade-up">
@@ -587,114 +535,103 @@
                 <p class="section-subtitle">Vamos trabalhar juntos?</p>
             </div>
             <div class="contact-content">
+
                 <div class="contact-info" data-aos="fade-right">
                     <h3>Entre em contato</h3>
                     <p>Estou sempre aberto a novas oportunidades e projetos interessantes. Vamos conversar!</p>
-                    
+
                     <div class="contact-items">
                         <div class="contact-item">
-                            <div class="contact-icon">
-                                <i class="fas fa-envelope"></i>
-                            </div>
+                            <div class="contact-icon"><i class="fas fa-envelope"></i></div>
                             <div class="contact-details">
                                 <h4>Email</h4>
-                                <p>rogeralmeida15000@gmail.com</p>
+                                <a href="mailto:rogeralmeida15000@gmail.com" class="contact-link">
+                                    rogeralmeida15000@gmail.com
+                                </a>
                             </div>
                         </div>
-                        
                         <div class="contact-item">
-                            <div class="contact-icon">
-                                <i class="fas fa-map-marker-alt"></i>
-                            </div>
+                            <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
                             <div class="contact-details">
                                 <h4>Localização</h4>
-                                <p>Lavras, MG - Brasil</p>
+                                <p>Lavras, MG — Brasil</p>
                             </div>
                         </div>
                     </div>
+
                     <div class="social-links">
-                        <a href="https://www.linkedin.com/in/rogercontabeis" class="social-link" target="_blank">
+                        <a href="https://www.linkedin.com/in/rogercontabeis" class="social-link" target="_blank" aria-label="LinkedIn">
                             <i class="fab fa-linkedin"></i>
                         </a>
-                        <a href="#" class="social-link" target="_blank">
+                        <a href="#" class="social-link" target="_blank" aria-label="GitHub">
                             <i class="fab fa-github"></i>
                         </a>
-                       <a href="https://7you.app/career/profile/resume/overview" target="_blank" class="social-icon">
-                         <i class="icon-7you"></i>
+                        <a href="https://7you.app/career/profile/resume/overview" class="social-link" target="_blank" aria-label="7You">
+                            <i class="fas fa-briefcase"></i>
                         </a>
                     </div>
                 </div>
-                <form class="contact-form" id="contact-form" data-aos="fade-left">
+
+                <form class="contact-form" id="contact-form" data-aos="fade-left" novalidate>
                     <div class="form-group">
                         <label for="name">Nome</label>
-                        <input type="text" id="name" name="name" required>
+                        <input type="text" id="name" name="name" placeholder="Seu nome" required>
                     </div>
-                    
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required>
+                        <input type="email" id="email" name="email" placeholder="seu@email.com" required>
                     </div>
-                    
                     <div class="form-group">
                         <label for="subject">Assunto</label>
-                        <input type="text" id="subject" name="subject" required>
+                        <input type="text" id="subject" name="subject" placeholder="Assunto da mensagem" required>
                     </div>
-                    
                     <div class="form-group">
                         <label for="message">Mensagem</label>
-                        <textarea id="message" name="message" rows="5" required></textarea>
+                        <textarea id="message" name="message" rows="5" placeholder="Sua mensagem..." required></textarea>
                     </div>
-                    
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-paper-plane"></i>
-                        Enviar Mensagem
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <i class="fas fa-paper-plane"></i> Enviar Mensagem
                     </button>
                 </form>
+
             </div>
         </div>
     </section>
 
-    <button id="btn-instalar" style="display:none;">
-  📲 Instalar App
-</button>
-
-    <!-- Footer -->
+    <!-- ===== FOOTER ===== -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <div class="footer-text">
-                    <p>&copy; 2026 Roger Almeida. Todos os direitos reservados.</p>
-                </div>
-                <div class="footer-links">
+                <p class="footer-text">&copy; 2026 Roger Almeida. Todos os direitos reservados.</p>
+                <nav class="footer-links" aria-label="Navegação do rodapé">
                     <a href="#inicio">Início</a>
                     <a href="#sobre">Sobre</a>
                     <a href="#projetos">Projetos</a>
                     <a href="#contato">Contato</a>
-                </div>
+                </nav>
             </div>
         </div>
     </footer>
 
-    <script src="/js/pwa.js"></script>
-
-    <!-- Back to Top Button -->
-    <button class="back-to-top" id="back-to-top">
+    <!-- Back to Top -->
+    <button class="back-to-top" id="back-to-top" aria-label="Voltar ao topo">
         <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Instalar PWA (oculto por padrão) -->
+    <button id="btn-instalar" class="btn-install" style="display:none;" aria-label="Instalar aplicativo">
+        <i class="fas fa-download"></i> Instalar App
     </button>
 
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="script.js"></script>
-
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-
-<script type="text/javascript">
-   (function(){
-      emailjs.init("L4ibNopK0qWP50L91");
-   })();
-</script>
-
-<script src="assets/js/script.js"></script>
-
+    <script>
+        if (typeof emailjs !== 'undefined') {
+            emailjs.init("L4ibNopK0qWP50L91");
+        }
+    </script>
+    <script src="script.js"></script>
+    <script src="pwa.js"></script>
 </body>
 </html>
