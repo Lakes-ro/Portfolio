@@ -997,6 +997,8 @@ section {
   transform: translateY(-2px);
 }
 
+.social-links--form { display: none; margin-top: 1.5rem; }
+
 .contact-form {
   background: var(--bg-card);
   padding: var(--spacing-2xl);
@@ -2289,6 +2291,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .contact-link { font-size: 0.82rem; word-break: break-all; }
   .contact-details p { font-size: 0.85rem; }
   .social-link { width: 42px; height: 42px; font-size: 1.1rem; }
+  .social-links { margin-top: 1.5rem; }
+  .contact-info .social-links { display: none; }
+  .social-links--form { display: flex; margin-top: 1.25rem; }
   .contact-form { padding: 1.25rem; }
   .form-group input,
   .form-group textarea { padding: 0.75rem; font-size: 0.9rem; }
@@ -2351,4 +2356,4 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
     .hero-title {
         font-size: 2rem; /* Diminui título gigante */
     }
-} 
+}
