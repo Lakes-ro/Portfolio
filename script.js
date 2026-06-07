@@ -17,10 +17,10 @@ const config = {
 // ===== TYPING ANIMATION =====
 const typingTexts = [
   '7º periodo de contabilidade',
-  'Desenvolvedor Iniciante',
-  'Criador de Soluções',
-  'Músico instrumentista',
   'Adventista do Sétimo Dia',
+  'Criador de Soluções',
+  'Desenvolvedor Iniciante',
+  'Músico instrumentista',
 ];
 
 // ===== DOM ELEMENTS =====
