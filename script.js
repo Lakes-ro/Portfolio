@@ -16,7 +16,7 @@ const config = {
 
 // ===== TYPING ANIMATION =====
 const typingTexts = [
-  '7º periodo de contabilidade',
+  '8º periodo de contabilidade',
   'Adventista do Sétimo Dia',
   'Criador de Soluções',
   'Desenvolvedor Iniciante',
