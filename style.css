@@ -2357,3 +2357,246 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
         font-size: 2rem; /* Diminui título gigante */
     }
 }
+
+/* ============================================
+   CTA — BAIXAR CURRÍCULO (fim da timeline de Experiência)
+   ============================================ */
+.cv-cta {
+  margin-top: var(--spacing-2xl);
+  background: var(--bg-card);
+  border: 1px solid var(--bg-tertiary);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl) var(--spacing-2xl);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-xl);
+  flex-wrap: wrap;
+}
+
+.cv-cta-text h3 {
+  color: var(--text-primary);
+  font-size: 1.15rem;
+  margin-bottom: 4px;
+}
+
+.cv-cta-text p {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  max-width: 460px;
+}
+
+.cv-cta .btn {
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .cv-cta {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+/* ============================================
+   GALERIA DE FOTOS — LIGHTBOX COM NAVEGAÇÃO LATERAL
+   ============================================ */
+
+.image-wrapper[role="button"] { cursor: pointer; }
+
+.gallery-count {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.gallery-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  background: rgba(2, 6, 23, 0.94);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+  cursor: default; /* restaura o cursor do sistema — o cursor customizado do site fica atrás do lightbox */
+}
+
+/* Reforço: enquanto o lightbox estiver aberto, desliga de vez o cursor customizado
+   (a bolinha) e garante o cursor normal do sistema em qualquer navegador */
+body.lightbox-open {
+  cursor: auto !important;
+}
+body.lightbox-open .cursor {
+  display: none !important;
+}
+
+.gallery-lightbox.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.gallery-lightbox-content {
+  max-width: min(85vw, 900px);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.gallery-lightbox-content img {
+  max-width: 100%;
+  max-height: 72vh;
+  object-fit: contain;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  user-select: none;
+}
+
+.gallery-caption {
+  color: #f1f5f9;
+  font-size: 0.95rem;
+  text-align: center;
+  max-width: 600px;
+}
+
+.gallery-index {
+  color: #94a3b8;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+.gallery-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  color: #f1f5f9;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.gallery-close:hover { background: rgba(255, 255, 255, 0.18); transform: rotate(90deg); }
+
+.gallery-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  color: #f1f5f9;
+  font-size: 1.3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.2s ease;
+  z-index: 1;
+}
+
+.gallery-arrow:hover { background: rgba(255, 255, 255, 0.2); }
+.gallery-arrow--prev { left: clamp(12px, 4vw, 48px); }
+.gallery-arrow--next { right: clamp(12px, 4vw, 48px); }
+.gallery-arrow:active { transform: translateY(-50%) scale(0.92); }
+
+@media (max-width: 640px) {
+  .gallery-arrow { width: 42px; height: 42px; font-size: 1.05rem; }
+  .gallery-close { width: 38px; height: 38px; top: 14px; right: 14px; }
+  .gallery-lightbox-content img { max-height: 60vh; }
+}
+
+/* ============================================
+   SKILLS — TAGS SIMPLES (sem porcentagem/barra)
+   ============================================ */
+.skill-category {
+  position: relative;
+  overflow: hidden;
+}
+
+.skill-category::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--cat-accent, var(--gradient-primary));
+}
+
+.skill-category--contabil    { --cat-accent: linear-gradient(90deg, #6366f1, #06b6d4); }
+.skill-category--ferramentas { --cat-accent: linear-gradient(90deg, #8b5cf6, #ec4899); }
+.skill-category--frontend    { --cat-accent: linear-gradient(90deg, #f97316, #f59e0b); }
+.skill-category--backend     { --cat-accent: linear-gradient(90deg, #10b981, #06b6d4); }
+
+.skill-category h3 i {
+  font-size: 0.9em;
+  margin-right: 8px;
+  -webkit-text-fill-color: initial;
+  background: var(--cat-accent, var(--gradient-primary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.skills-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: var(--spacing-md);
+}
+
+.skill-tag {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 18px 9px 15px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(160deg, rgba(99, 102, 241, 0.14), rgba(139, 92, 246, 0.06));
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  color: var(--text-primary);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: default;
+  transition: border-color 0.25s ease, transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.skill-tag i {
+  font-size: 0.95em;
+  color: var(--primary-color);
+  width: 15px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.skill-tag:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-3px);
+  background: linear-gradient(160deg, rgba(99, 102, 241, 0.24), rgba(139, 92, 246, 0.12));
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.18);
+}
+
+.skill-tag:hover i { color: #fff; }
+
+[data-theme="light"] .skill-tag {
+  background: linear-gradient(160deg, #eef2ff, #f5f3ff);
+  border-color: rgba(99, 102, 241, 0.2);
+  color: #1e293b;
+}
+[data-theme="light"] .skill-tag:hover {
+  background: linear-gradient(160deg, #e0e7ff, #ede9fe);
+}

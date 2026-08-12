@@ -55,7 +55,6 @@ function initializeApp() {
   initializeCustomCursor();
   initializeContactForm();
   initializeCounters();
-  initializeSkillBars();
   
   // Initialize AOS
   if (typeof AOS !== 'undefined') {
@@ -308,7 +307,7 @@ function initializeAnimations() {
   }, observerOptions);
 
   // Observe elements for animation
-  document.querySelectorAll('.skill-progress, .stat-number').forEach(el => {
+  document.querySelectorAll('.stat-number').forEach(el => {
     observer.observe(el);
   });
 }
@@ -429,23 +428,6 @@ function animateCounter(element) {
     }
     element.textContent = Math.floor(current);
   }, 16);
-}
-
-// ===== SKILL BARS ANIMATION =====
-function initializeSkillBars() {
-  const skillBars = document.querySelectorAll('.skill-progress');
-  
-  const skillObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const width = entry.target.getAttribute('data-width');
-        entry.target.style.width = `${width}%`;
-        skillObserver.unobserve(entry.target);
-      }
-    });
-  });
-
-  skillBars.forEach(bar => skillObserver.observe(bar));
 }
 
 // ===== UTILITY FUNCTIONS =====
@@ -597,3 +579,110 @@ if (contactForm) {
             });
     });
 }
+
+// ============================================
+// GALERIA DE FOTOS — LIGHTBOX COM NAVEGAÇÃO
+// ============================================
+(function () {
+  // ⚠️ Para adicionar novas fotos, é só incluir um novo objeto aqui embaixo,
+  // com o caminho do arquivo de imagem e uma legenda opcional.
+  const galleryImages = [
+    { src: 'vivencias.jpeg', caption: 'Sempre aprendendo — rotina de estudos e trabalho' },
+    { src: 'turma-contabeis.jpg', caption: 'Turma de Ciências Contábeis' },
+    // { src: 'nome-do-arquivo.jpg', caption: 'Legenda da foto' },
+  ];
+
+  let currentIndex = 0;
+
+  const trigger = document.getElementById('gallery-trigger');
+  const countEl = document.getElementById('gallery-count');
+  const lightbox = document.getElementById('gallery-lightbox');
+  const imageEl = document.getElementById('gallery-image');
+  const captionEl = document.getElementById('gallery-caption');
+  const indexEl = document.getElementById('gallery-index');
+  const btnClose = document.getElementById('gallery-close');
+  const btnPrev = document.getElementById('gallery-prev');
+  const btnNext = document.getElementById('gallery-next');
+
+  if (!trigger || !lightbox) return;
+
+  if (countEl) {
+    countEl.textContent = galleryImages.length > 1 ? `${galleryImages.length} fotos — clique para ver` : 'Clique para ampliar';
+  }
+
+  function render() {
+    const item = galleryImages[currentIndex];
+    imageEl.src = item.src;
+    imageEl.alt = item.caption || '';
+    captionEl.textContent = item.caption || '';
+    indexEl.textContent = `${currentIndex + 1} / ${galleryImages.length}`;
+    // Esconde as setas quando só existe uma foto
+    const showArrows = galleryImages.length > 1;
+    btnPrev.style.display = showArrows ? 'flex' : 'none';
+    btnNext.style.display = showArrows ? 'flex' : 'none';
+  }
+
+  function open(index) {
+    currentIndex = index;
+    render();
+    lightbox.classList.add('active');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    document.body.classList.add('lightbox-open');
+  }
+
+  function close() {
+    lightbox.classList.remove('active');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    document.body.classList.remove('lightbox-open');
+  }
+
+  function next() {
+    currentIndex = (currentIndex + 1) % galleryImages.length;
+    render();
+  }
+
+  function prev() {
+    currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
+    render();
+  }
+
+  trigger.addEventListener('click', () => open(0));
+  trigger.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      open(0);
+    }
+  });
+
+  btnClose.addEventListener('click', close);
+  btnNext.addEventListener('click', next);
+  btnPrev.addEventListener('click', prev);
+
+  // Fecha ao clicar fora da imagem (no fundo escuro)
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) close();
+  });
+
+  // Navegação pelo teclado
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('active')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowRight') next();
+    if (e.key === 'ArrowLeft') prev();
+  });
+
+  // Navegação por swipe (celular)
+  let touchStartX = 0;
+  lightbox.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  });
+  lightbox.addEventListener('touchend', (e) => {
+    const touchEndX = e.changedTouches[0].screenX;
+    const diff = touchEndX - touchStartX;
+    if (Math.abs(diff) > 50) {
+      diff > 0 ? prev() : next();
+    }
+  });
+})();

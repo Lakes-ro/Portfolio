@@ -11,12 +11,13 @@
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Roger.">
     <link rel="apple-touch-icon" href="icon-192x192.png">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="logo titulo.png">
+    <link rel="icon" type="image/png" href="logo_titulo.png">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,7 +57,7 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="#inicio" class="nav-logo">
-                <span class="logo-text">Gama</span><span class="logo-dot">.</span>
+                <span class="logo-text">Roger</span><span class="logo-dot">.</span>
             </a>
 
             <ul class="nav-menu" id="nav-menu">
@@ -109,6 +110,9 @@
                     <a href="#contato" class="btn btn-outline">
                         <i class="fas fa-envelope"></i> Contato
                     </a>
+                    <a href="curriculo-roger-almeida.pdf" class="btn btn-outline" download>
+                        <i class="fas fa-download"></i> Baixar CV
+                    </a>
                 </div>
             </div>
         </div>
@@ -140,12 +144,12 @@
                     </p>
                     <div class="about-stats">
                         <div class="stat">
-                            <span class="stat-number" data-count="5">0</span>
+                            <span class="stat-number" data-count="6">0</span>
                             <span class="stat-label">Projetos</span>
                         </div>
                         <div class="stat">
-                            <span class="stat-number" data-count="1">0</span>
-                            <span class="stat-label">Ano de Exp.</span>
+                            <span class="stat-number" data-count="3">0</span>
+                            <span class="stat-label">Anos de Exp.</span>
                         </div>
                         <div class="stat">
                             <span class="stat-number" data-count="5">0</span>
@@ -154,12 +158,13 @@
                     </div>
                 </div>
                 <div class="about-image" data-aos="fade-left">
-                    <div class="image-wrapper">
+                    <div class="image-wrapper" id="gallery-trigger" role="button" tabindex="0" aria-label="Abrir galeria de fotos">
                         <img src="vivencias.jpeg" alt="Workspace">
                         <div class="image-overlay">
                             <div class="overlay-content">
-                                <i class="fas fa-code"></i>
+                                <i class="fas fa-images"></i>
                                 <p>Sempre aprendendo</p>
+                                <span class="gallery-count" id="gallery-count"></span>
                             </div>
                         </div>
                     </div>
@@ -177,179 +182,43 @@
             <div class="skills-content">
                 <div class="skills-categories">
                     
-                    <div class="skill-category" data-aos="fade-up" data-aos-delay="100">
-                        <h3>Contábil</h3>
-                        <div class="skills-list">
-                            <div class="skill-item">
-                                <div class="skill-info">
-                                    <span class="skill-name">AASI</span>
-                                    <span class="skill-percentage">40%</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="40"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-info">
-                                    <span class="skill-name">DRACMA</span>
-                                    <span class="skill-percentage">40%</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="40"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-info">
-                                    <span class="skill-name">APS</span>
-                                    <span class="skill-percentage">40%</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="40"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-info">
-                                    <span class="skill-name">AANS</span>
-                                    <span class="skill-percentage">30%</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="30"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-info">
-                                    <span class="skill-name">ACMS</span>
-                                    <span class="skill-percentage">40%</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="40"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-info">
-                                    <span class="skill-name">ACS</span>
-                                    <span class="skill-percentage">40%</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="40"></div>
-                                </div>
-                            </div>
+                    <div class="skill-category skill-category--contabil" data-aos="fade-up" data-aos-delay="100">
+                        <h3><i class="fas fa-building-columns"></i> Contábil</h3>
+                        <p class="skill-category-note">Sistemas ERP e de gestão utilizados em rotina de escritório contábil e departamento pessoal</p>
+                        <div class="skills-tags">
+                            <span class="skill-tag" title="Sistema de gestão contábil"><i class="fas fa-file-invoice-dollar"></i>AASI</span>
+                            <span class="skill-tag" title="Sistema de gestão contábil"><i class="fas fa-file-invoice-dollar"></i>DRACMA</span>
+                            <span class="skill-tag" title="Sistema de departamento pessoal / folha de pagamento"><i class="fas fa-users-gear"></i>APS</span>
+                            <span class="skill-tag" title="Sistema de gestão contábil/fiscal"><i class="fas fa-file-invoice-dollar"></i>AANS</span>
+                            <span class="skill-tag" title="Sistema de controle e gestão de materiais/estoque"><i class="fas fa-boxes-stacked"></i>ACMS</span>
+                            <span class="skill-tag" title="Sistema de gestão contábil/fiscal"><i class="fas fa-file-invoice-dollar"></i>ACS</span>
                         </div>
                     </div>
 
-                    <div class="skill-category" data-aos="fade-up" data-aos-delay="200">
-                        <h3>Ferramentas</h3>
-                        <div class="skills-list">
-                             <div class="skill-item">
-                                <div class="skill-info">
-                                    <span class="skill-name">Interesse</span>
-                                    <span class="skill-percentage">100%</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="100"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-info">
-                                    <span class="skill-name">Inteligência Artificial</span>
-                                    <span class="skill-percentage">40%</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="40"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-info">
-                                    <span class="skill-name">Word</span>
-                                    <span class="skill-percentage">70%</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="70"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-info">
-                                    <span class="skill-name">Excel</span>
-                                    <span class="skill-percentage">70%</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="70"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-info">
-                                    <span class="skill-name">PowerPoint</span>
-                                    <span class="skill-percentage">70%</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="70"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-info">
-                                    <span class="skill-name">Power BI</span>
-                                    <span class="skill-percentage">30%</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="30"></div>
-                                </div>
-                            </div>
-                             <div class="skill-item">
-                                <div class="skill-info">
-                                    <span class="skill-name">Vscode</span>
-                                    <span class="skill-percentage">65%</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="65"></div>
-                                </div>
-                            </div>
+                    <div class="skill-category skill-category--ferramentas" data-aos="fade-up" data-aos-delay="200">
+                        <h3><i class="fas fa-toolbox"></i> Ferramentas</h3>
+                        <div class="skills-tags">
+                            <span class="skill-tag"><i class="fas fa-robot"></i>Inteligência Artificial</span>
+                            <span class="skill-tag"><i class="fas fa-file-word"></i>Word</span>
+                            <span class="skill-tag"><i class="fas fa-file-excel"></i>Excel</span>
+                            <span class="skill-tag"><i class="fas fa-file-powerpoint"></i>PowerPoint</span>
+                            <span class="skill-tag"><i class="fas fa-chart-pie"></i>Power BI</span>
+                            <span class="skill-tag"><i class="fas fa-code"></i>VS Code</span>
                         </div>
                     </div>
 
-                    <div class="skill-category" data-aos="fade-up" data-aos-delay="300">
-                        <h3>Frontend</h3>
-                        <div class="skills-list">
-                            <div class="skill-item">
-                                <div class="skill-info">
-                                    <span class="skill-name">HTML5</span>
-                                    <span class="skill-percentage">30%</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="30"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-info">
-                                    <span class="skill-name">CSS5</span>
-                                    <span class="skill-percentage">20%</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="20"></div>
-                                </div>
-                            </div>
+                    <div class="skill-category skill-category--frontend" data-aos="fade-up" data-aos-delay="300">
+                        <h3><i class="fas fa-laptop-code"></i> Frontend</h3>
+                        <div class="skills-tags">
+                            <span class="skill-tag"><i class="fab fa-html5"></i>HTML5</span>
+                            <span class="skill-tag"><i class="fab fa-css3-alt"></i>CSS3</span>
                         </div>
                     </div>
-                    <div class="skill-category" data-aos="fade-up" data-aos-delay="400">
-                        <h3>Backend</h3>
-                        <div class="skills-list">
-                            <div class="skill-item">
-                                <div class="skill-info">
-                                    <span class="skill-name">Supabase</span>
-                                    <span class="skill-percentage">60%</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="60"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-info">
-                                    <span class="skill-name">Javascript</span>
-                                    <span class="skill-percentage">30%</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-width="30"></div>
-                                </div>
-                            </div>
+                    <div class="skill-category skill-category--backend" data-aos="fade-up" data-aos-delay="400">
+                        <h3><i class="fas fa-server"></i> Backend</h3>
+                        <div class="skills-tags">
+                            <span class="skill-tag"><i class="fas fa-database"></i>Supabase</span>
+                            <span class="skill-tag"><i class="fab fa-js"></i>JavaScript</span>
                         </div>
                     </div>
 
@@ -376,7 +245,7 @@
                             </div>
                         </a>
 
-                        <a href="Certificado Iatecpdf.pdf" target="_blank" class="certificate-card" data-aos="fade-up" data-aos-delay="100">
+                        <a href="certificado-iatec.pdf" target="_blank" class="certificate-card" data-aos="fade-up" data-aos-delay="100">
                             <div class="card-icon"><i class="fas fa-file-pdf"></i></div>
                             <div class="card-info">
                                 <h3>Desenvolvimento Front-End</h3>
@@ -385,7 +254,7 @@
                             </div>
                         </a>
 
-                        <a href="Certificado Udemy Ia generativa.pdf" target="_blank" class="certificate-card" data-aos="fade-up" data-aos-delay="200">
+                        <a href="certificado-udemy-ia-generativa.pdf" target="_blank" class="certificate-card" data-aos="fade-up" data-aos-delay="200">
                             <div class="card-icon"><i class="fas fa-file-pdf"></i></div>
                             <div class="card-info">
                                 <h3>IA Generativa para Finanças e Contabilidade</h3>
@@ -414,44 +283,73 @@
                 <div class="timeline-item" data-aos="fade-up" data-aos-delay="100">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
-                        <span class="timeline-date">2025 — Presente</span>
-                        <h3>Escritório Contábil</h3>
-                        <h4>Assistente Contábil</h4>
-                        <p>Gestão contábil de lojas e escolas, lançamentos de tarifas bancárias, aplicações, resgates e reconciliação. Desenvolvimento de soluções automatizadas. 
-                            <p></p>Sistemas: AASI, Dracma, Excel, PowerAutomate, ACS.
+                        <span class="timeline-date">Junho de 2026 — Atual</span>
+                        <h3>Auxiliar de Contabilidade</h3>
+                        <h4>Net.Useb — Setor de Contabilidade</h4>
+                        <p>Conferência de notas fiscais, reconciliação bancária, análise e fechamento de balanço, conferência de conta corrente, férias, FGTS, rescisão, avisos e aluguéis.</p>
                     </div>
                 </div>
 
                 <div class="timeline-item" data-aos="fade-up" data-aos-delay="150">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
-                        <span class="timeline-date">2026</span>
-                        <h3>Analista Fiscal</h3>
-                        <h4>Assistente</h4>
-                        <p>Conferência de NFS-e, controle fiscal de aluguéis e manutenção de notas sobre o regime fiscal.</p>
+                        <span class="timeline-date">Novembro de 2025 — Atual</span>
+                        <h3>Auxiliar Fiscal</h3>
+                        <h4>Net.Useb — Setor de Contabilidade</h4>
+                        <p>Apoio a rotinas do setor fiscal, incluindo apuração e organização de obrigações acessórias.</p>
                     </div>
                 </div>
 
                 <div class="timeline-item" data-aos="fade-up" data-aos-delay="200">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
-                        <span class="timeline-date">2025 — 2026</span>
-                        <h3>Almoxarifado</h3>
-                        <h4>Auxiliar de Estoque</h4>
-                        <p>Manutenção e organização de estoques, controle de materiais e atendimento. Sistemas: Dracma, Adven.tech.</p>
+                        <span class="timeline-date">Junho de 2025 — Novembro de 2025</span>
+                        <h3>Assistente de Almoxarifado</h3>
+                        <h4>Faculdade Adventista de Minas Gerais (FADMINAS)</h4>
+                        <p>Lançamento de notas fiscais no sistema DRACMA, alimentação de entrada e saída de materiais no Adventech, controle de estoque e contagem.</p>
                     </div>
                 </div>
 
                 <div class="timeline-item" data-aos="fade-up" data-aos-delay="250">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
-                        <span class="timeline-date">2023 — 2025</span>
-                        <h3>Departamento de Pessoal</h3>
-                        <h4>Assistente</h4>
-                        <p>Planilhas de controle interno, rescisões, admissões, transferências, férias, ASOs e processos com o software APS e Ahgora.</p>
+                        <span class="timeline-date">Maio de 2025 — Junho de 2025</span>
+                        <h3>Assistente de Recursos Humanos (RH)</h3>
+                        <h4>Faculdade Adventista de Minas Gerais (FADMINAS)</h4>
+                        <p>Controle de ponto e frequência, agendamento e acompanhamento de exames periódicos (ASO), atendimento e suporte a colaboradores.</p>
                     </div>
                 </div>
 
+                <div class="timeline-item" data-aos="fade-up" data-aos-delay="300">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">Março de 2023 — Maio de 2025</span>
+                        <h3>Auxiliar de Departamento Pessoal</h3>
+                        <h4>Net.Useb — Setor de Departamento Pessoal</h4>
+                        <p>Processos completos de admissão e demissão, cálculo de rescisão e RPS, exames admissionais/demissionais (ASO), controle de férias e transferências entre unidades.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item" data-aos="fade-up" data-aos-delay="350">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">2019</span>
+                        <h3>Instrutor Auxiliar Voluntário</h3>
+                        <h4>CMID — Prefeitura Municipal de Rio das Ostras</h4>
+                        <p>Apoio na instrução do curso "Informática para o Mundo do Trabalho" (150h), voltado à qualificação profissional da comunidade.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="cv-cta" data-aos="fade-up" data-aos-delay="300">
+                <div class="cv-cta-text">
+                    <h3>Quer ver tudo em detalhe?</h3>
+                    <p>Baixe meu currículo completo em PDF, com datas, responsabilidades e sistemas de cada cargo.</p>
+                </div>
+                <a href="curriculo-roger-almeida.pdf" class="btn btn-primary" download>
+                    <i class="fas fa-download"></i> Baixar Currículo Completo
+                </a>
             </div>
         </div>
     </section>
@@ -493,7 +391,7 @@
 
                 <div class="project-card" data-aos="fade-up" data-aos-delay="150">
                     <div class="project-image">
-                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&h=300&fit=crop" alt="Gestão Financeira">
+                        <img src="gestao-financeira-preview.png" alt="Gestão Financeira — tela de login da plataforma">
                         <div class="project-overlay">
                             <div class="project-links">
                                 <a href="#contato" class="project-link" aria-label="Solicitar acesso">
@@ -540,10 +438,9 @@
                         </a>
                     </div>
                 </div>
-
                 <div class="project-card" data-aos="fade-up" data-aos-delay="250">
                     <div class="project-image">
-                        <img src="Escala louvor.png" alt="Escala de Louvor">
+                        <img src="escala-louvor.png" alt="Escala de Louvor">
                         <div class="project-overlay">
                             <div class="project-links">
                                 <a href="https://setimotom.vercel.app/" class="project-link" aria-label="Ver projeto">
@@ -595,7 +492,7 @@
 
                 <div class="project-card" data-aos="fade-up" data-aos-delay="300">
                     <div class="project-image">
-                        <img src="vaquinha.png" alt="Vendas de Pizza">
+                        <img src="vaquinha.png" alt="CrowdFunding Vaquinha Solidária">
                         <div class="project-overlay">
                             <div class="project-links">
                                 <a href="https://ludmilla-pereira-da-silva.vercel.app/" class="project-link" target="_blank" aria-label="Ver projeto">
@@ -731,6 +628,24 @@
     <button id="btn-instalar" class="btn-install" style="display:none;" aria-label="Instalar aplicativo">
         <i class="fas fa-download"></i> Instalar App
     </button>
+
+    <!-- ===== LIGHTBOX DA GALERIA DE FOTOS ===== -->
+    <div id="gallery-lightbox" class="gallery-lightbox" aria-hidden="true">
+        <button class="gallery-close" id="gallery-close" aria-label="Fechar galeria">
+            <i class="fas fa-times"></i>
+        </button>
+        <button class="gallery-arrow gallery-arrow--prev" id="gallery-prev" aria-label="Foto anterior">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="gallery-lightbox-content">
+            <img id="gallery-image" src="" alt="">
+            <p class="gallery-caption" id="gallery-caption"></p>
+            <span class="gallery-index" id="gallery-index"></span>
+        </div>
+        <button class="gallery-arrow gallery-arrow--next" id="gallery-next" aria-label="Próxima foto">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
 
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
