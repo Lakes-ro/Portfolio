@@ -589,6 +589,7 @@ if (contactForm) {
   const galleryImages = [
     { src: 'vivencias.jpeg', caption: 'Sempre aprendendo — rotina de estudos e trabalho' },
     { src: 'turma-contabeis.jpg', caption: 'Turma de Ciências Contábeis' },
+    { src: 'dinamica-profissoes.jpg', caption: 'Dinâmica de profissões — trabalho em equipe e planejamento de carreira' },
     // { src: 'nome-do-arquivo.jpg', caption: 'Legenda da foto' },
   ];
 
