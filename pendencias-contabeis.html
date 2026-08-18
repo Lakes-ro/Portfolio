@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Pendências Contábeis</title>
+  <style>
+    :root {
+      --bg:#0f172a;--card-bg:#1e293b;--accent:#38bdf8;
+      --text:#f8fafc;--text-muted:#94a3b8;--border:#334155;
+      --danger:#ef4444;--warning:#f59e0b;--success:#10b981;--info:#6366f1;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+    body{background:var(--bg);color:var(--text);padding:20px}
+    header{display:flex;justify-content:space-between;align-items:center;padding-bottom:20px;border-bottom:1px solid var(--border);margin-bottom:20px;flex-wrap:wrap;gap:15px}
+    h1{font-size:1.5rem;display:flex;align-items:center;gap:10px}
+    .control-panel{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .month-picker{background:var(--card-bg);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:6px;font-weight:bold}
+    .btn{background:var(--accent);color:#000;border:none;padding:9px 16px;border-radius:6px;font-weight:600;cursor:pointer;transition:opacity .2s;white-space:nowrap}
+    .btn:hover{opacity:.85}
+    .btn-secondary{background:var(--card-bg);color:var(--text);border:1px solid var(--border)}
+    .btn-danger{background:var(--danger);color:white}
+    .alert-banner{background:rgba(239,68,68,.15);border:1px solid var(--danger);color:#fca5a5;padding:12px 16px;border-radius:8px;margin-bottom:20px;display:none;align-items:center;justify-content:space-between}
+    .alert-banner.active{display:flex}
+    .main-grid{display:grid;grid-template-columns:1fr 490px;gap:20px}
+    @media(max-width:1100px){.main-grid{grid-template-columns:1fr}}
+    .card{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:20px}
+    table{width:100%;border-collapse:collapse;text-align:left}
+    th,td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:.87rem}
+    th{color:var(--text-muted);font-weight:600}
+    tr.selected{background:rgba(56,189,248,.1)}
+    tr:hover{background:rgba(255,255,255,.02);cursor:pointer}
+    .badge{padding:3px 8px;border-radius:4px;font-size:.74rem;font-weight:bold;display:inline-block;white-space:nowrap}
+    .badge-danger{background:rgba(239,68,68,.2);color:#fca5a5}
+    .badge-warning{background:rgba(245,158,11,.2);color:#fcd34d}
+    .badge-success{background:rgba(16,185,129,.2);color:#6ee7b7}
+    .badge-info{background:rgba(99,102,241,.2);color:#a5b4fc}
+    .cell-sub{font-size:.73rem;color:var(--text-muted);margin-top:3px}
+    .dept-tag{display:inline-block;font-size:.71rem;color:#a5b4fc;background:rgba(99,102,241,.15);border-radius:3px;padding:1px 5px;margin-top:3px}
+    .form-group{margin-bottom:13px}
+    label{display:block;font-size:.79rem;color:var(--text-muted);margin-bottom:5px}
+    input,select{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:9px 10px;border-radius:6px;font-size:.88rem}
+    input:focus,select:focus{outline:none;border-color:var(--accent)}
+    input[type=number]{padding-right:22px}
+    .month-wrap{display:flex;align-items:stretch;width:100%}
+    .month-wrap input{flex:1;min-width:0;border-radius:6px 0 0 6px}
+    .month-navs{display:flex;flex-direction:column;width:18px;flex-shrink:0;background:var(--bg);border:1px solid var(--border);border-left:none;border-radius:0 6px 6px 0;overflow:hidden}
+    .month-nav{flex:1;background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-size:7px;padding:0;display:flex;align-items:center;justify-content:center}
+    .month-nav:hover{color:var(--accent);background:rgba(56,189,248,.1)}
+    .month-nav:first-child{border-bottom:1px solid var(--border)}
+    .rich-editor{width:100%;min-height:200px;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:6px;font-size:.88rem;overflow-y:auto;outline:none;line-height:1.6}
+    .rich-editor:focus{border-color:var(--accent)}
+    .rich-editor[placeholder]:empty:before{content:attr(placeholder);color:var(--text-muted);cursor:text}
+    .rich-editor img{max-width:100%;height:auto;border-radius:4px;margin:8px 0;border:1px solid var(--border);display:block;cursor:zoom-in}
+    .editor-toolbar{display:flex;gap:5px;margin-bottom:5px}
+    .editor-toolbar button{background:var(--border);color:var(--text);border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:.8rem}
+    .editor-toolbar button:hover{background:var(--text-muted);color:#000}
+    .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+    .filters{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+    .filter-btn{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:.83rem;padding:5px 10px;border-radius:4px;white-space:nowrap}
+    .filter-btn.active{background:var(--border);color:var(--text);font-weight:bold}
+    th.sort-asc::after{content:" ↑";color:var(--accent)}
+    th.sort-desc::after{content:" ↓";color:var(--accent)}
+    th[id^="th-"]{cursor:pointer;user-select:none}
+    th[id^="th-"]:hover{color:var(--accent)}
+    .titulo-cell{max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .item-count{margin-left:auto;font-size:.78rem;color:var(--text-muted);padding:4px 8px;background:rgba(0,0,0,.2);border-radius:4px;white-space:nowrap}
+    .select-bar{display:flex;gap:10px;align-items:center;margin-bottom:14px;padding:10px 14px;background:rgba(0,0,0,.2);border-radius:8px;border:1px solid var(--border)}
+    .sb-btn{background:none;border:1px solid var(--border);color:var(--text-muted);padding:4px 12px;border-radius:4px;cursor:pointer;font-size:.8rem;white-space:nowrap}
+    .sb-btn:hover{border-color:var(--accent);color:var(--accent)}
+    .sel-count{font-size:.8rem;color:var(--text-muted);margin-left:auto}
+    .export-opts{padding:12px 15px;background:rgba(0,0,0,.15);border-radius:8px;margin-top:12px;border:1px solid var(--border)}
+    .eo-title{font-size:.72rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}
+    .eo-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    .item-check{width:14px!important;height:14px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;margin-top:3px}
+    .group-cb{width:13px!important;height:13px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
+    .dept-header input[type=checkbox]{margin-right:4px}
+    /* LIGHTBOX */
+    #lightbox{display:none;position:fixed;z-index:9999;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.94);align-items:center;justify-content:center;cursor:zoom-out}
+    #lightbox.active{display:flex}
+    #lightbox img{max-width:95vw;max-height:92vh;border-radius:6px;box-shadow:0 0 50px rgba(0,0,0,.9);cursor:default}
+    #lightbox .close-lb{position:absolute;top:15px;right:22px;color:white;font-size:2.2rem;cursor:pointer;line-height:1;opacity:.7;user-select:none}
+    #lightbox .close-lb:hover{opacity:1}
+    /* MODAL */
+    .modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(15,23,42,.87);backdrop-filter:blur(4px);align-items:center;justify-content:center}
+    .modal-content{background:var(--card-bg);border:1px solid var(--border);width:92%;max-width:820px;border-radius:12px;padding:25px;box-shadow:0 12px 30px rgba(0,0,0,.6);max-height:93vh;overflow-y:auto}
+    .modal-content.modal-wide{max-width:1060px}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+    .close-modal{color:var(--text-muted);font-size:24px;font-weight:bold;cursor:pointer;border:none;background:none}
+    .close-modal:hover{color:var(--text)}
+    /* RELATÓRIO */
+    .report-filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:20px;padding:15px;background:rgba(0,0,0,.25);border-radius:8px;border:1px solid var(--border);align-items:end}
+    .report-filters .form-group{margin:0}
+    .report-body{display:none}
+    .report-body.visible{display:block}
+    .summary-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(95px,1fr));gap:10px;margin-bottom:22px}
+    .sc{background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+    .sc .n{font-size:1.8rem;font-weight:700}
+    .sc .l{font-size:.68rem;color:var(--text-muted);margin-top:3px;text-transform:uppercase;letter-spacing:.4px}
+    .sc.danger .n{color:var(--danger)}
+    .sc.warning .n{color:var(--warning)}
+    .sc.success .n{color:var(--success)}
+    .sc.info .n{color:#818cf8}
+    .sc.green .n{font-size:1rem;color:#6ee7b7}
+    .report-group{margin-bottom:16px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+    .rg-header{background:rgba(56,189,248,.08);padding:11px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:6px}
+    .rg-header h3{font-size:.92rem;color:var(--accent)}
+    .rg-right{display:flex;gap:8px;align-items:center}
+    .count-badge{background:var(--accent);color:#000;padding:2px 9px;border-radius:10px;font-size:.73rem;font-weight:700}
+    .valor-badge{background:rgba(16,185,129,.2);color:#6ee7b7;padding:2px 9px;border-radius:10px;font-size:.73rem;font-weight:700}
+    .dept-block{border-top:1px solid var(--border)}
+    .dept-header{background:rgba(255,255,255,.03);padding:7px 16px;font-size:.77rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;display:flex;justify-content:space-between;align-items:center}
+    .dept-meta{display:flex;gap:10px;font-weight:400}
+    .dept-items{padding:0 16px}
+    .report-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(51,65,85,.45)}
+    .report-item:last-child{border-bottom:none}
+    .ri-info{flex:1;min-width:0}
+    .ri-info strong{font-size:.87rem}
+    .ri-meta{font-size:.74rem;color:var(--text-muted);margin-top:2px}
+    .ri-valor{font-size:.76rem;color:#6ee7b7;font-weight:600;margin-top:3px}
+    .anotacao-bloco{font-size:.82rem;line-height:1.6;color:var(--text-muted);margin-top:10px;padding:10px 12px;background:rgba(0,0,0,.2);border-radius:6px;border-left:3px solid var(--border)}
+    .anotacao-bloco img{max-width:100%;height:auto;border-radius:4px;margin:8px 0;border:1px solid var(--border);display:block;cursor:zoom-in}
+    .checkbox-label{display:flex;align-items:center;gap:7px;cursor:pointer;font-size:.82rem;color:var(--text-muted)}
+    .checkbox-label input[type=checkbox]{width:auto;accent-color:var(--accent)}
+    /* CALC */
+    .calc-widget{display:none;position:fixed;bottom:20px;right:20px;width:260px;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;box-shadow:0 15px 35px rgba(0,0,0,.6);z-index:2000;overflow:hidden;user-select:none}
+    .calc-header{background:var(--border);padding:10px;display:flex;justify-content:space-between;align-items:center;font-weight:bold;cursor:grab;color:var(--text)}
+    .calc-header:active{cursor:grabbing}
+    .calc-display{background:#000;color:#fff;text-align:right;padding:14px 16px;font-size:1.5rem;font-family:monospace;border-bottom:1px solid var(--border);min-height:58px;word-wrap:break-word}
+    .calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)}
+    .calc-btn{background:var(--card-bg);border:none;padding:14px 0;font-size:1.1rem;color:var(--text);cursor:pointer}
+    .calc-btn:hover{background:var(--bg)}
+    .calc-btn.op{background:rgba(56,189,248,.1);color:var(--accent)}
+    .calc-btn.eq{background:var(--accent);color:#000;font-weight:bold}
+    .calc-btn.cl{background:rgba(239,68,68,.1);color:#fca5a5}
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📋 Fechamento Contábil</h1>
+  <div class="control-panel">
+    <label for="mesTrabalho" style="margin:0;white-space:nowrap;">Competência:</label>
+    <div class="month-wrap" ><input type="month" id="mesTrabalho" class="month-picker" onchange="mudouMes()"><div class="month-navs"><button type="button" class="month-nav" onclick="ajustarMes('mesTrabalho',+1);mudouMes()">▲</button><button type="button" class="month-nav" onclick="ajustarMes('mesTrabalho',-1);mudouMes()">▼</button></div></div>
+    <button class="btn" style="background:var(--success);color:white" onclick="abrirModalRelatorio()">📊 Relatório</button>
+    <button class="btn btn-secondary" onclick="abrirModalDeptos()">🏢 Departamentos</button>
+    <button class="btn" style="background:var(--info);color:white" onclick="abrirModalAnotacoes()">📝 Anotações</button>
+    <button class="btn" style="background:var(--warning);color:#000" onclick="toggleCalc()">🧮 Calculadora</button>
+    <button class="btn" onclick="novaPendencia()">+ Nova</button>
+    <button class="btn btn-secondary" onclick="exportarJSON()">⬇ Backup</button>
+    <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">⬆ Importar</button>
+    <input type="file" id="importFile" style="display:none" onchange="importarJSON(event)">
+  </div>
+</header>
+
+<div id="alertBanner" class="alert-banner">
+  <div>🔴 <strong>Pendências herdadas de meses anteriores!</strong> <span id="qtdHerdadas">0</span> pendência(s) aguardando solução.</div>
+  <button class="filter-btn" style="color:white;text-decoration:underline" onclick="setFiltro('herdadas',null)">Ver herdadas</button>
+</div>
+
+<div class="main-grid">
+  <!-- LISTA -->
+  <div class="card" style="min-height:0;overflow:hidden;">
+    <div class="filters">
+      <button class="filter-btn active" onclick="setFiltro('ativas',this)">Visão do Mês</button>
+      <button class="filter-btn" onclick="setFiltro('herdadas',this)">🔴 Herdadas</button>
+      <button class="filter-btn" onclick="setFiltro('encerradas',this)">🟢 Encerradas</button>
+      <button class="filter-btn" onclick="setFiltro('todas_historico',this)">📁 Histórico</button>
+      <input id="buscaRapida" type="text" placeholder="🔍 título / conta / depto…" style="margin-left:auto;width:220px;padding:5px 10px;font-size:.82rem" oninput="renderApp()"><span id="itemCounter" class="item-count"></span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th id="th-status" onclick="setSortCol('status')">Status</th>
+          <th id="th-titulo" onclick="setSortCol('titulo')">Título · Conta · Departamento</th>
+          <th id="th-area"   onclick="setSortCol('area')">Área</th>
+          <th id="th-valor"  onclick="setSortCol('valor')">Valor</th>
+          <th id="th-aber"   onclick="setSortCol('abertura')">Abertura</th>
+          <th id="th-enc"    onclick="setSortCol('enc')">Enc.</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaCorpo"></tbody>
+    </table>
+  </div>
+
+  <!-- FORMULÁRIO -->
+  <div class="card" style="position:sticky;top:20px;align-self:start;max-height:calc(100vh - 40px);overflow-y:auto;">
+    <h3 id="formTitulo" style="margin-bottom:15px">Nova Pendência</h3>
+    <form id="pendenciaForm" onsubmit="salvarPendencia(event)">
+      <input type="hidden" id="pendenciaId">
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px">
+        <div class="form-group">
+          <label>Título / Descrição</label>
+          <input type="text" id="titulo" required placeholder="Ex: Dif. IR de Férias">
+        </div>
+        <div class="form-group">
+          <label>Conta Contábil</label>
+          <input type="text" id="conta" placeholder="Ex: 1135001" list="listContas">
+          <datalist id="listContas"></datalist>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px">
+        <div class="form-group">
+          <label>Departamento</label>
+          <input type="text" id="departamento" placeholder="Ex: Recursos Humanos" list="listDepts">
+          <datalist id="listDepts"></datalist>
+        </div>
+        <div class="form-group">
+          <label>Área</label>
+          <select id="area">
+            <option>Ativo</option><option>Passivo</option><option>DRE</option>
+            <option>Fiscal</option><option>Societário</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="status">
+            <option>Pendente</option><option>Em Análise</option><option value="Encerrado">Encerrado</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+          <label>Valor (R$)</label>
+          <input type="number" id="valor" min="0" step="0.01" placeholder="0,00">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group">
+          <label>Mês de Abertura</label>
+          <div class="month-wrap"><input type="month" id="mesAbertura" required><div class="month-navs"><button type="button" class="month-nav" onclick="ajustarMes('mesAbertura',+1)">▲</button><button type="button" class="month-nav" onclick="ajustarMes('mesAbertura',-1)">▼</button></div></div>
+        </div>
+        <div class="form-group">
+          <label>Encerramento (Prev/Real)</label>
+          <div class="month-wrap"><input type="month" id="mesEncerramento" required><div class="month-navs"><button type="button" class="month-nav" onclick="ajustarMes('mesEncerramento',+1)">▲</button><button type="button" class="month-nav" onclick="ajustarMes('mesEncerramento',-1)">▼</button></div></div>
+        </div>
+        </div>
+      <div class="form-group">
+        <label>Anotações e Comprovantes (Ctrl+V para colar prints · clique nas imagens para ampliar)</label>
+        <div class="editor-toolbar">
+          <button type="button" onclick="document.execCommand('bold')"><b>N</b></button>
+          <button type="button" onclick="document.execCommand('italic')"><i>I</i></button>
+          <button type="button" onclick="document.execCommand('insertUnorderedList')">• Lista</button>
+        </div>
+        <div id="anotacoes" class="rich-editor" contenteditable="true" placeholder="Textos, check-lists ou Ctrl+V para colar prints…"></div>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn btn-danger" id="btnDeletar" style="display:none" onclick="deletarPendencia()">Excluir</button>
+        <button type="submit" class="btn">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL ANOTAÇÕES -->
+<div id="modalAnotacoes" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="tituloModalAnotacoes">📝 Anotações do Mês</h2>
+      <button class="close-modal" onclick="fecharModalAnotacoes()">&times;</button>
+    </div>
+    <div class="editor-toolbar">
+      <button type="button" onclick="document.execCommand('bold')"><b>N</b></button>
+      <button type="button" onclick="document.execCommand('italic')"><i>I</i></button>
+      <button type="button" onclick="document.execCommand('insertUnorderedList')">• Lista</button>
+    </div>
+    <div id="anotacoesGerais" class="rich-editor" style="min-height:380px" contenteditable="true" placeholder="Caderno livre do mês… Ctrl+V para prints."></div>
+    <div class="actions" style="margin-top:15px">
+      <button class="btn" onclick="fecharModalAnotacoes()">Salvar e Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RELATÓRIO -->
+<div id="modalRelatorio" class="modal">
+  <div class="modal-content modal-wide">
+    <div class="modal-header">
+      <h2>📊 Relatório de Pendências</h2>
+      <button class="close-modal" onclick="document.getElementById('modalRelatorio').style.display='none'">&times;</button>
+    </div>
+    <div class="report-filters">
+      <div class="form-group">
+        <label>Competência</label>
+        <div class="month-wrap"><input type="month" id="relMes"><div class="month-navs"><button type="button" class="month-nav" onclick="ajustarMes('relMes',+1)">▲</button><button type="button" class="month-nav" onclick="ajustarMes('relMes',-1)">▼</button></div></div>
+      </div>
+      <div class="form-group">
+        <label>Conta Contábil</label>
+        <input type="text" id="relConta" placeholder="Todas" list="relListContas">
+        <datalist id="relListContas"></datalist>
+      </div>
+      <div class="form-group">
+        <label>Departamento</label>
+        <input type="text" id="relDept" placeholder="Todos" list="relListDepts">
+        <datalist id="relListDepts"></datalist>
+      </div>
+      <div class="form-group">
+        <label>Área</label>
+        <select id="relArea">
+          <option value="">Todas</option>
+          <option>Ativo</option><option>Passivo</option><option>DRE</option>
+          <option>Fiscal</option><option>Societário</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="relStatus">
+          <option value="">Todos (ativos no mês)</option>
+          <option value="ativas">Não encerradas</option>
+          <option value="Pendente">Pendente</option>
+          <option value="Em Análise">Em Análise</option>
+          <option value="Encerrado">Encerradas no mês</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Agrupar por</label>
+        <select id="relAgrupamento">
+          <option value="conta">Conta → Departamento</option>
+          <option value="dept">Departamento → Conta</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Para (Destinatário)</label>
+        <input type="text" id="relPara" placeholder="Ex: Depto Recursos Humanos">
+      </div>
+      <div style="display:flex;align-items:flex-end">
+        <button class="btn" onclick="gerarRelatorio()" style="width:100%">🔍 Gerar</button>
+      </div>
+    </div>
+    <div class="export-opts">
+      <div class="eo-title">⚙ Opções do documento exportado</div>
+      <div class="eo-grid">
+        <label class="checkbox-label"><input type="checkbox" id="relAnotacoes"> Anotações e imagens</label>
+        <label class="checkbox-label"><input type="checkbox" id="optResumo" checked> Cards de resumo</label>
+        <label class="checkbox-label"><input type="checkbox" id="optArea" checked> Distribuição por área</label>
+        <label class="checkbox-label"><input type="checkbox" id="optAssinatura" checked> Linha de assinatura</label>
+      </div>
+    </div>
+    <div id="reportBody" class="report-body">
+      <div id="reportCards" class="summary-cards"></div>
+      <div id="selectBar" class="select-bar" style="display:none">
+        <button class="sb-btn" onclick="selecionarTodos(true)">☑ Selecionar tudo</button>
+        <button class="sb-btn" onclick="selecionarTodos(false)">☐ Desmarcar tudo</button>
+        <button class="sb-btn" onclick="inverterSelecao()">⇄ Inverter</button>
+        <span class="sel-count" id="selCount"></span>
+      </div>
+      <div id="reportContent"></div>
+      <div class="actions" style="margin-top:18px">
+        <button class="btn btn-secondary" onclick="exportarRelatorio()">📤 Exportar / Imprimir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DEPARTAMENTOS -->
+<div id="modalDeptos" class="modal">
+  <div class="modal-content" style="max-width:600px">
+    <div class="modal-header">
+      <h2>🏢 Mapeamento de Departamentos</h2>
+      <button class="close-modal" onclick="fecharModalDeptos()">&times;</button>
+    </div>
+    <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:14px">Cadastre apelidos ou códigos numéricos e defina como devem aparecer no relatório. Ex: <strong>158121 → Sede</strong></p>
+    <table style="margin-bottom:14px">
+      <thead><tr><th>Código / Alias</th><th>Nome exibido</th><th style="width:40px"></th></tr></thead>
+      <tbody id="tabelaDeptMap"></tbody>
+    </table>
+    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end">
+      <div class="form-group" style="margin:0">
+        <label>Código / Alias</label>
+        <input type="text" id="deptMapKey" placeholder="158121">
+      </div>
+      <div class="form-group" style="margin:0">
+        <label>Nome exibido</label>
+        <input type="text" id="deptMapVal" placeholder="Sede">
+      </div>
+      <button class="btn" onclick="adicionarMapeamento()">Adicionar</button>
+    </div>
+    <div class="actions" style="margin-top:16px">
+      <button class="btn btn-secondary" onclick="fecharModalDeptos()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="fecharLightbox(event)">
+  <span class="close-lb" onclick="fecharLightbox(event)">&times;</span>
+  <img id="lightboxImg" src="" onclick="event.stopPropagation()">
+</div>
+
+<!-- CALCULADORA -->
+<div id="calcWidget" class="calc-widget">
+  <div class="calc-header" id="calcWidgetHeader">
+    <span>🧮 Calculadora</span>
+    <button onclick="toggleCalc()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.2rem">&times;</button>
+  </div>
+  <div class="calc-display" id="calcDisplay">0</div>
+  <div class="calc-grid">
+    <button class="calc-btn cl" onclick="calcBtn('C')">C</button>
+    <button class="calc-btn op" onclick="calcBtn('(')">(</button>
+    <button class="calc-btn op" onclick="calcBtn(')')">)</button>
+    <button class="calc-btn op" onclick="calcBtn('/')">÷</button>
+    <button class="calc-btn" onclick="calcBtn('7')">7</button>
+    <button class="calc-btn" onclick="calcBtn('8')">8</button>
+    <button class="calc-btn" onclick="calcBtn('9')">9</button>
+    <button class="calc-btn op" onclick="calcBtn('*')">×</button>
+    <button class="calc-btn" onclick="calcBtn('4')">4</button>
+    <button class="calc-btn" onclick="calcBtn('5')">5</button>
+    <button class="calc-btn" onclick="calcBtn('6')">6</button>
+    <button class="calc-btn op" onclick="calcBtn('-')">-</button>
+    <button class="calc-btn" onclick="calcBtn('1')">1</button>
+    <button class="calc-btn" onclick="calcBtn('2')">2</button>
+    <button class="calc-btn" onclick="calcBtn('3')">3</button>
+    <button class="calc-btn op" onclick="calcBtn('+')">+</button>
+    <button class="calc-btn" onclick="calcBtn('0')" style="grid-column:span 2">0</button>
+    <button class="calc-btn" onclick="calcBtn('.')">.</button>
+    <button class="calc-btn eq" onclick="calcBtn('=')">=</button>
+  </div>
+</div>
+
+<script>
+  var deptMap = JSON.parse(localStorage.getItem('fechamento_dept_map')) || {};
+  var db = JSON.parse(localStorage.getItem('fechamento_pendencias_v3')) || [];
+  var anotacoesDb = JSON.parse(localStorage.getItem('fechamento_anotacoes_gerais')) || {};
+  var itemSelecionadoId = null;
+  var filtroAtual = 'ativas';
+  var sortCol = null, sortDir = 1;
+  var calcAberta = false;
+  var calcValor = '0';
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var hoje = new Date().toISOString().slice(0,7);
+    document.getElementById('mesTrabalho').value = hoje;
+    document.getElementById('mesAbertura').value = hoje;
+    document.getElementById('mesEncerramento').value = hoje;
+    document.getElementById('relMes').value = hoje;
+    renderApp();
+    configurarPaste('anotacoes');
+    configurarPaste('anotacoesGerais');
+    ativarLightbox(document.getElementById('anotacoes'));
+    ativarLightbox(document.getElementById('anotacoesGerais'));
+    tornarArrastavel(document.getElementById('calcWidget'), document.getElementById('calcWidgetHeader'));
+    // Auto-fill encerramento when status → Encerrado
+    document.getElementById('status').addEventListener('change', function() {
+      if (this.value === 'Encerrado') {
+        var mes = document.getElementById('mesTrabalho').value;
+        if (document.getElementById('mesEncerramento').value > mes || !document.getElementById('mesEncerramento').value)
+          document.getElementById('mesEncerramento').value = mes;
+      }
+    });
+    // Ctrl+S to save
+    document.addEventListener('keydown', function(e) {
+      if ((e.ctrlKey||e.metaKey) && e.key==='s') {
+        e.preventDefault();
+        var form = document.getElementById('pendenciaForm');
+        if (form.checkValidity()) form.dispatchEvent(new Event('submit', {cancelable:true}));
+        else form.reportValidity();
+      }
+    });
+  });
+
+  // Lightbox para report content (delegação de evento)
+  document.addEventListener('click', function(e) {
+    if (e.target.tagName === 'IMG' && e.target.closest && e.target.closest('#reportContent')) {
+      abrirLightbox(e.target.src);
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') fecharLightboxDirect();
+  });
+
+  function ativarLightbox(container) {
+    if (!container) return;
+    container.addEventListener('click', function(e) {
+      if (e.target.tagName === 'IMG') abrirLightbox(e.target.src);
+    });
+  }
+
+  function abrirLightbox(src) {
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightbox').classList.add('active');
+  }
+
+  function fecharLightbox(e) {
+    if (!e || e.target !== document.getElementById('lightboxImg')) fecharLightboxDirect();
+  }
+
+  function fecharLightboxDirect() {
+    document.getElementById('lightbox').classList.remove('active');
+    document.getElementById('lightboxImg').src = '';
+  }
+
+  function fmtMes(ym) {
+    if (!ym) return '';
+    var p = ym.split('-');
+    return ('Jan Fev Mar Abr Mai Jun Jul Ago Set Out Nov Dez').split(' ')[+p[1]-1] + '/' + p[0];
+  }
+
+  function fmtValor(v) {
+    var n = Number(v);
+    if ((!v && v !== 0) || isNaN(n)) return '';
+    return n.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+  }
+
+  function esc(t) {
+    return String(t||'').replace(/[&<>"']/g, function(c) {
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c];
+    });
+  }
+
+  function atualizarDatalist() {
+    var contas = Array.from(new Set(db.map(function(i){return i.conta}).filter(Boolean))).sort();
+    var depts  = Array.from(new Set(db.map(function(i){return i.departamento}).filter(Boolean))).sort();
+    ['listContas','relListContas'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.innerHTML = contas.map(function(c){return '<option value="'+esc(c)+'">';}).join('');
+    });
+    ['listDepts','relListDepts'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.innerHTML = depts.map(function(d){return '<option value="'+esc(d)+'">';}).join('');
+    });
+  }
+
+  function visivelNoMes(item, mes) {
+    return item.mesAbertura <= mes && (item.status !== 'Encerrado' || item.mesEncerramento >= mes);
+  }
+
+  function setSortCol(col) {
+    sortDir = (sortCol === col) ? -sortDir : 1;
+    sortCol = col;
+    renderApp();
+  }
+
+  function resolverDept(d) {
+    if (!d) return '';
+    var t = d.trim();
+    var tl = t.toLowerCase();
+    for (var k in deptMap) {
+      if (k.toLowerCase() === tl) return deptMap[k];
+    }
+    return t;
+  }
+
+  function abrirModalDeptos() {
+    renderTabelaMapeamentos();
+    document.getElementById('modalDeptos').style.display = 'flex';
+  }
+
+  function fecharModalDeptos() {
+    document.getElementById('modalDeptos').style.display = 'none';
+  }
+
+  function renderTabelaMapeamentos() {
+    var tbody = document.getElementById('tabelaDeptMap');
+    tbody.innerHTML = '';
+    var keys = Object.keys(deptMap).sort();
+    if (!keys.length) {
+      tbody.innerHTML = '<tr><td colspan="3" style="color:var(--text-muted);text-align:center;padding:12px">Nenhum mapeamento cadastrado</td></tr>';
+      return;
+    }
+    keys.forEach(function(k) {
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td><code style="background:rgba(0,0,0,.3);padding:2px 6px;border-radius:4px;font-size:.85rem">'+esc(k)+'</code></td>'+
+        '<td><strong>'+esc(deptMap[k])+'</strong></td>'+
+        '<td><button class="btn btn-danger" style="padding:3px 8px;font-size:.75rem" onclick="removerMapeamento(\''+esc(k)+'\')">✕</button></td>';
+      tbody.appendChild(tr);
+    });
+  }
+
+  function adicionarMapeamento() {
+    var k = document.getElementById('deptMapKey').value.trim();
+    var v = document.getElementById('deptMapVal').value.trim();
+    if (!k || !v) { alert('Preencha o código e o nome.'); return; }
+    deptMap[k] = v;
+    localStorage.setItem('fechamento_dept_map', JSON.stringify(deptMap));
+    document.getElementById('deptMapKey').value = '';
+    document.getElementById('deptMapVal').value = '';
+    renderTabelaMapeamentos();
+    atualizarDatalist();
+    renderApp();
+  }
+
+  function removerMapeamento(k) {
+    delete deptMap[k];
+    localStorage.setItem('fechamento_dept_map', JSON.stringify(deptMap));
+    renderTabelaMapeamentos();
+    renderApp();
+  }
+
+  function mudouMes() { renderApp(); }
+
+  function renderApp() {
+    var mes = document.getElementById('mesTrabalho').value;
+    var busca = (document.getElementById('buscaRapida') ? document.getElementById('buscaRapida').value : '').toLowerCase();
+    var tbody = document.getElementById('tabelaCorpo');
+    tbody.innerHTML = '';
+
+    var herdadas = db.filter(function(i){ return i.mesAbertura < mes && visivelNoMes(i, mes) && i.status !== 'Encerrado'; });
+    document.getElementById('qtdHerdadas').innerText = herdadas.length;
+    document.getElementById('alertBanner').classList.toggle('active', herdadas.length > 0);
+
+    var lista = db.filter(function(item) {
+      var encerrouAntes = item.status === 'Encerrado' && item.mesEncerramento < mes;
+      var abriuDepois   = item.mesAbertura > mes;
+      if (filtroAtual === 'todas_historico') return true;
+      if (filtroAtual === 'herdadas')   return item.mesAbertura < mes && !encerrouAntes;
+      if (filtroAtual === 'encerradas') return item.status === 'Encerrado' && item.mesEncerramento === mes;
+      return !encerrouAntes && !abriuDepois;
+    });
+
+    if (busca) lista = lista.filter(function(i) {
+      return (i.titulo||'').toLowerCase().indexOf(busca) >= 0 ||
+             (i.conta||'').toLowerCase().indexOf(busca) >= 0 ||
+             (i.departamento||'').toLowerCase().indexOf(busca) >= 0;
+    });
+
+    // Sort
+    if (sortCol) {
+      lista.sort(function(a, b) {
+        var va, vb;
+        if (sortCol==='valor')    { va=Number(a.valor)||0; vb=Number(b.valor)||0; }
+        else if (sortCol==='abertura') { va=a.mesAbertura||''; vb=b.mesAbertura||''; }
+        else if (sortCol==='enc')     { va=a.mesEncerramento||''; vb=b.mesEncerramento||''; }
+        else if (sortCol==='area')    { va=(a.area||'').toLowerCase(); vb=(b.area||'').toLowerCase(); }
+        else                           { va=(a.titulo||'').toLowerCase(); vb=(b.titulo||'').toLowerCase(); }
+        return va<vb?-sortDir:va>vb?sortDir:0;
+      });
+    }
+    // Update th sort indicators
+    ['status','titulo','area','valor','aber','enc'].forEach(function(col) {
+      var th = document.getElementById('th-'+col);
+      if (!th) return;
+      th.classList.remove('sort-asc','sort-desc');
+      var key = col==='aber'?'abertura':col;
+      if (sortCol===key) th.classList.add(sortDir===1?'sort-asc':'sort-desc');
+    });
+    // Update item counter
+    var counter = document.getElementById('itemCounter');
+    if (counter) counter.textContent = lista.length + ' item' + (lista.length!==1?'s':'');
+
+    lista.forEach(function(item) {
+      var isHerdada = item.mesAbertura < mes;
+      var isEncMes  = item.status === 'Encerrado' && item.mesEncerramento === mes;
+      var isArquiv  = item.status === 'Encerrado' && item.mesEncerramento < mes;
+      var isFutura  = item.mesEncerramento > mes;
+
+      var bc='badge-warning', bt='🟡 Aberta';
+      if (isArquiv)  { bc='badge-info';    bt='📁 Arquivada'; }
+      else if (isEncMes)   { bc='badge-success'; bt='🟢 Encerrada'; }
+      else if (isHerdada)  { bc='badge-danger';  bt='🔴 Herdada'; }
+      else if (item.status==='Em Análise') { bc='badge-info'; bt='🔵 Em Análise'; }
+      else if (isFutura && item.mesAbertura===mes) { bc='badge-info'; bt='🔵 Prev: '+fmtMes(item.mesEncerramento); }
+
+      var conta = item.conta ? '<div class="cell-sub">🗂️ '+esc(item.conta)+'</div>' : '';
+      var dept  = item.departamento ? '<span class="dept-tag">🏢 '+esc(resolverDept(item.departamento))+'</span>' : '';
+      var vFmt  = fmtValor(item.valor);
+
+      var tr = document.createElement('tr');
+      if (item.id === itemSelecionadoId) tr.classList.add('selected');
+      tr.innerHTML =
+        '<td><span class="badge '+bc+'">'+bt+'</span></td>'+
+        '<td title="'+esc(item.titulo)+'"><div class="titulo-cell"><strong>'+esc(item.titulo)+'</strong></div>'+conta+dept+'</td>'+
+        '<td>'+item.area+'</td>'+
+        '<td style="white-space:nowrap;color:#6ee7b7;font-size:.84rem">'+vFmt+'</td>'+
+        '<td>'+fmtMes(item.mesAbertura)+'</td>'+
+        '<td>'+fmtMes(item.mesEncerramento)+'</td>';
+      tr.onclick = (function(id){ return function(){ carregarForm(id); }; })(item.id);
+      tbody.appendChild(tr);
+    });
+
+    localStorage.setItem('fechamento_pendencias_v3', JSON.stringify(db));
+    atualizarDatalist();
+  }
+
+  function salvarPendencia(e) {
+    e.preventDefault();
+    var id = document.getElementById('pendenciaId').value || Date.now().toString();
+    var item = {
+      id: id,
+      titulo:         document.getElementById('titulo').value,
+      conta:          document.getElementById('conta').value.trim(),
+      departamento:   document.getElementById('departamento').value.trim(),
+      area:           document.getElementById('area').value,
+      status:         document.getElementById('status').value,
+      valor:          document.getElementById('valor').value || '',
+      mesAbertura:    document.getElementById('mesAbertura').value,
+      mesEncerramento:document.getElementById('mesEncerramento').value,
+      anotacoes:      document.getElementById('anotacoes').innerHTML,
+      atualizadoEm:   new Date().toISOString()
+    };
+    var idx = db.findIndex(function(i){ return i.id === id; });
+    if (idx > -1) db[idx] = item; else db.push(item);
+    novaPendencia();
+    renderApp();
+  }
+
+  function carregarForm(id) {
+    var item = db.find(function(i){ return i.id === id; });
+    if (!item) return;
+    itemSelecionadoId = id;
+    document.getElementById('pendenciaId').value    = id;
+    document.getElementById('titulo').value         = item.titulo;
+    document.getElementById('conta').value          = item.conta || '';
+    document.getElementById('departamento').value   = item.departamento || '';
+    document.getElementById('area').value           = item.area;
+    document.getElementById('status').value         = item.status;
+    document.getElementById('valor').value          = item.valor || '';
+    document.getElementById('mesAbertura').value    = item.mesAbertura;
+    document.getElementById('mesEncerramento').value= item.mesEncerramento;
+    document.getElementById('anotacoes').innerHTML  = item.anotacoes || '';
+    document.getElementById('formTitulo').innerText = 'Editar Pendência';
+    document.getElementById('btnDeletar').style.display = 'block';
+    renderApp();
+  }
+
+  function novaPendencia() {
+    itemSelecionadoId = null;
+    document.getElementById('pendenciaForm').reset();
+    document.getElementById('pendenciaId').value  = '';
+    document.getElementById('conta').value        = '';
+    document.getElementById('departamento').value = '';
+    document.getElementById('valor').value        = '';
+    document.getElementById('anotacoes').innerHTML= '';
+    var mes = document.getElementById('mesTrabalho').value;
+    document.getElementById('mesAbertura').value     = mes;
+    document.getElementById('mesEncerramento').value = mes;
+    document.getElementById('formTitulo').innerText  = 'Nova Pendência';
+    document.getElementById('btnDeletar').style.display = 'none';
+    renderApp();
+  }
+
+  function deletarPendencia() {
+    if (confirm('Excluir esta pendência?')) {
+      db = db.filter(function(i){ return i.id !== itemSelecionadoId; });
+      novaPendencia();
+    }
+  }
+
+  function setFiltro(tipo, btn) {
+    filtroAtual = tipo;
+    document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+    renderApp();
+  }
+
+  function abrirModalAnotacoes() {
+    var mes = document.getElementById('mesTrabalho').value;
+    document.getElementById('tituloModalAnotacoes').innerText = '📝 Anotações de ' + fmtMes(mes);
+    document.getElementById('anotacoesGerais').innerHTML = anotacoesDb[mes] || '';
+    document.getElementById('modalAnotacoes').style.display = 'flex';
+  }
+
+  function fecharModalAnotacoes() {
+    var mes = document.getElementById('mesTrabalho').value;
+    anotacoesDb[mes] = document.getElementById('anotacoesGerais').innerHTML;
+    localStorage.setItem('fechamento_anotacoes_gerais', JSON.stringify(anotacoesDb));
+    document.getElementById('modalAnotacoes').style.display = 'none';
+  }
+
+  function abrirModalRelatorio() {
+    document.getElementById('relMes').value = document.getElementById('mesTrabalho').value;
+    atualizarDatalist();
+    document.getElementById('reportBody').classList.remove('visible');
+    document.getElementById('modalRelatorio').style.display = 'flex';
+  }
+
+  function filtrarItensRelatorio() {
+    var mes    = document.getElementById('relMes').value;
+    var contaF = document.getElementById('relConta').value.trim().toLowerCase();
+    var deptF  = document.getElementById('relDept').value.trim().toLowerCase();
+    var areaF  = document.getElementById('relArea').value;
+    var stF    = document.getElementById('relStatus').value;
+
+    return db.filter(function(item) {
+      if (!visivelNoMes(item, mes)) return false;
+      if (stF==='Encerrado') { if (item.status!=='Encerrado'||item.mesEncerramento!==mes) return false; }
+      else if (stF==='ativas') { if (item.status==='Encerrado') return false; }
+      else if (stF==='Pendente'||stF==='Em Análise') { if (item.status!==stF) return false; }
+      if (contaF && (item.conta||'').toLowerCase().indexOf(contaF)<0) return false;
+      if (deptF  && (item.departamento||'').toLowerCase().indexOf(deptF)<0) return false;
+      if (areaF  && item.area!==areaF) return false;
+      return true;
+    });
+  }
+
+  function agruparItens(itens, modo) {
+    var grupos = {};
+    itens.forEach(function(item) {
+      var k1 = modo==='conta' ? (item.conta||'(sem conta)') : (resolverDept(item.departamento)||'(sem departamento)');
+      var k2 = modo==='conta' ? (resolverDept(item.departamento)||'(sem departamento)') : (item.conta||'(sem conta)');
+      if (!grupos[k1]) grupos[k1] = {};
+      if (!grupos[k1][k2]) grupos[k1][k2] = [];
+      grupos[k1][k2].push(item);
+    });
+    return grupos;
+  }
+
+  function selecionarTodos(val) {
+    document.querySelectorAll('.item-check').forEach(function(cb){cb.checked=val;});
+    atualizarContador();
+  }
+
+  function inverterSelecao() {
+    document.querySelectorAll('.item-check').forEach(function(cb){cb.checked=!cb.checked;});
+    atualizarContador();
+  }
+
+  function toggleGrupo(cb) {
+    var bloco = cb.closest('.dept-block') || cb.closest('.report-group');
+    if (bloco) bloco.querySelectorAll('.item-check').forEach(function(c){c.checked=cb.checked;});
+    atualizarContador();
+  }
+
+  function atualizarContador() {
+    var total   = document.querySelectorAll('.item-check').length;
+    var checked = document.querySelectorAll('.item-check:checked').length;
+    var el = document.getElementById('selCount');
+    if (el) el.textContent = checked + ' de ' + total + ' selecionada' + (total!==1?'s':'')+' para exportar';
+  }
+
+  function gerarRelatorio() {
+    var mes   = document.getElementById('relMes').value;
+    var grupo = document.getElementById('relAgrupamento').value;
+    var comAn = document.getElementById('relAnotacoes').checked;
+    var itens = filtrarItensRelatorio();
+
+    var pend = itens.filter(function(i){return i.status==='Pendente';}).length;
+    var emA  = itens.filter(function(i){return i.status==='Em Análise';}).length;
+    var enc  = itens.filter(function(i){return i.status==='Encerrado';}).length;
+    var herd = itens.filter(function(i){return i.mesAbertura<mes;}).length;
+    var uC   = (new Set(itens.map(function(i){return i.conta||'—';}))).size;
+    var uD   = (new Set(itens.map(function(i){return resolverDept(i.departamento)||'—';}))).size;
+    var totR = itens.reduce(function(s,i){return s+(Number(i.valor)||0);},0);
+
+    var vCard = totR>0?'<div class="sc green"><div class="n">'+fmtValor(totR)+'</div><div class="l">Valor Total</div></div>':'';
+    document.getElementById('reportCards').innerHTML =
+      '<div class="sc"><div class="n">'+itens.length+'</div><div class="l">Total</div></div>'+
+      '<div class="sc danger"><div class="n">'+pend+'</div><div class="l">Pendentes</div></div>'+
+      '<div class="sc warning"><div class="n">'+emA+'</div><div class="l">Em Análise</div></div>'+
+      '<div class="sc success"><div class="n">'+enc+'</div><div class="l">Encerradas</div></div>'+
+      '<div class="sc danger"><div class="n">'+herd+'</div><div class="l">Herdadas</div></div>'+
+      '<div class="sc info"><div class="n">'+uC+'</div><div class="l">Contas</div></div>'+
+      '<div class="sc info"><div class="n">'+uD+'</div><div class="l">Deptos</div></div>'+
+      vCard;
+
+    // Area breakdown
+    var areaBk={};
+    itens.forEach(function(i){
+      if(!areaBk[i.area]) areaBk[i.area]={count:0,valor:0};
+      areaBk[i.area].count++; areaBk[i.area].valor+=(Number(i.valor)||0);
+    });
+    var areaColors={Ativo:'#38bdf8',Passivo:'#f59e0b',DRE:'#10b981',Fiscal:'#6366f1','Societário':'#f472b6'};
+    var aHtml='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px">';
+    Object.keys(areaBk).sort().forEach(function(a){
+      var d=areaBk[a],col=areaColors[a]||'#94a3b8';
+      aHtml+='<div style="padding:8px 12px;border-radius:6px;background:rgba(0,0,0,.25);border-left:3px solid '+col+';min-width:110px">'+
+              '<div style="font-weight:700;font-size:.82rem;color:'+col+'">'+esc(a)+'</div>'+
+              '<div style="font-size:.75rem;color:#94a3b8;margin-top:2px">'+d.count+' item'+(d.count!==1?'s':'')+
+              (d.valor>0?' · '+fmtValor(d.valor):'')+'</div></div>';
+    });
+    aHtml+='</div>';
+
+    var grupos=agruparItens(itens,grupo);
+    var icon1=grupo==='conta'?'🗂️':'🏢';
+    var icon2=grupo==='conta'?'🏢':'🗂️';
+    var html=itens.length===0
+      ?'<p style="text-align:center;color:var(--text-muted);padding:30px">Nenhuma pendência com esses filtros.</p>'
+      :aHtml;
+
+    if (itens.length) {
+      Object.keys(grupos).sort().forEach(function(k1){
+        var sub=grupos[k1];
+        var totI=Object.keys(sub).reduce(function(s,k){return s+sub[k].length;},0);
+        var totV=Object.keys(sub).reduce(function(s,k){return s+sub[k].reduce(function(ss,i){return ss+(Number(i.valor)||0);},0);},0);
+        var vBadge=totV>0?'<span class="valor-badge">💰 '+fmtValor(totV)+'</span>':'';
+        // group-level select checkbox
+        html+='<div class="report-group">'+
+              '<div class="rg-header">'+
+              '<label style="display:flex;align-items:center;gap:8px;cursor:pointer">'+
+              '<input type="checkbox" class="group-cb" checked onclick="toggleGrupo(this)">'+
+              '<h3>'+icon1+' '+esc(k1)+'</h3></label>'+
+              '<div class="rg-right">'+vBadge+'<span class="count-badge">'+totI+' pendência'+(totI!==1?'s':'')+'</span></div></div>';
+
+        Object.keys(sub).sort().forEach(function(k2){
+          var items=sub[k2];
+          var subV=items.reduce(function(s,i){return s+(Number(i.valor)||0);},0);
+          var subVStr=subV>0?'<span style="color:#6ee7b7;font-weight:400">💰 '+fmtValor(subV)+'</span>':'';
+          html+='<div class="dept-block">'+
+                '<div class="dept-header">'+
+                '<label style="display:flex;align-items:center;gap:6px;cursor:pointer">'+
+                '<input type="checkbox" class="group-cb" checked onclick="toggleGrupo(this)">'+
+                '<span>'+icon2+' '+esc(k2)+'</span></label>'+
+                '<div class="dept-meta">'+subVStr+'<span>'+items.length+' item(s)</span></div></div>'+
+                '<div class="dept-items">';
+          items.forEach(function(item,n){
+            var bc='badge-warning',bt=item.status;
+            if(item.status==='Encerrado')      {bc='badge-success';bt='🟢 Encerrada';}
+            else if(item.mesAbertura<mes)       {bc='badge-danger'; bt='🔴 Herdada';}
+            else if(item.status==='Em Análise') {bc='badge-info';   bt='🔵 Em Análise';}
+            var vStr=item.valor?'<div class="ri-valor">💰 '+fmtValor(item.valor)+'</div>':'';
+            var anHtm=comAn&&item.anotacoes?'<div class="anotacao-bloco">'+item.anotacoes+'</div>':'';
+            html+='<div class="report-item">'+
+                  '<input type="checkbox" class="item-check" data-id="'+item.id+'" checked onchange="atualizarContador()">'+
+                  '<span style="font-size:.7rem;color:var(--text-muted);min-width:16px;text-align:right;padding-top:4px;flex-shrink:0">'+(n+1)+'.</span>'+
+                  '<span class="badge '+bc+'">'+bt+'</span>'+
+                  '<div class="ri-info"><strong>'+esc(item.titulo)+'</strong>'+
+                  '<div class="ri-meta">'+item.area+' · Abertura: '+fmtMes(item.mesAbertura)+' · Prev. Enc.: '+fmtMes(item.mesEncerramento)+'</div>'+
+                  vStr+anHtm+'</div></div>';
+          });
+          html+='</div></div>';
+        });
+        html+='</div>';
+      });
+    }
+
+    document.getElementById('reportContent').innerHTML=html;
+    document.getElementById('reportBody').classList.add('visible');
+    var sb=document.getElementById('selectBar');
+    if(sb) sb.style.display=itens.length?'flex':'none';
+    atualizarContador();
+  }
+
+
+  function exportarRelatorio() {
+    var mes    = document.getElementById('relMes').value;
+    var para   = document.getElementById('relPara').value.trim();
+    var contaF = document.getElementById('relConta').value.trim()||'Todas';
+    var deptF  = document.getElementById('relDept').value.trim()||'Todos';
+    var areaF  = document.getElementById('relArea').value||'Todas';
+    var stF    = document.getElementById('relStatus').value;
+    var grupo  = document.getElementById('relAgrupamento').value;
+    var comAn  = document.getElementById('relAnotacoes').checked;
+    var optRes = document.getElementById('optResumo').checked;
+    var optAr  = document.getElementById('optArea').checked;
+    var optSig = document.getElementById('optAssinatura').checked;
+
+    // Only export checked items
+    var checkedIds = Array.from(document.querySelectorAll('.item-check:checked')).map(function(el){return el.dataset.id;});
+    if (!checkedIds.length) { alert('Nenhuma pendência selecionada. Marque os itens que deseja exportar.'); return; }
+
+    var todosItens = filtrarItensRelatorio();
+    var itens = todosItens.filter(function(i){ return checkedIds.indexOf(i.id)>=0; });
+
+    var pend=itens.filter(function(i){return i.status==='Pendente';}).length;
+    var emA =itens.filter(function(i){return i.status==='Em Análise';}).length;
+    var enc =itens.filter(function(i){return i.status==='Encerrado';}).length;
+    var herd=itens.filter(function(i){return i.mesAbertura<mes;}).length;
+    var uC  =(new Set(itens.map(function(i){return i.conta||'—';}))).size;
+    var uD  =(new Set(itens.map(function(i){return resolverDept(i.departamento)||'—';}))).size;
+    var totR=itens.reduce(function(s,i){return s+(Number(i.valor)||0);},0);
+
+    var stLabels={'':'Ativos no mês','ativas':'Não encerradas','Pendente':'Pendente','Em Análise':'Em Análise','Encerrado':'Encerradas no mês'};
+    var stLabel=stLabels[stF]||stF;
+    var agLbl=grupo==='conta'?'Conta → Departamento':'Departamento → Conta';
+
+    // Area breakdown
+    var areaBk={};
+    itens.forEach(function(i){
+      if(!areaBk[i.area]) areaBk[i.area]={count:0,valor:0};
+      areaBk[i.area].count++; areaBk[i.area].valor+=(Number(i.valor)||0);
+    });
+    var areaRows='';
+    Object.keys(areaBk).sort().forEach(function(a){
+      var d=areaBk[a];
+      areaRows+='<tr><td>'+esc(a)+'</td><td style="text-align:center">'+d.count+'</td>'+
+        '<td style="text-align:right;color:#059669;font-weight:600">'+(d.valor>0?fmtValor(d.valor):'—')+'</td></tr>';
+    });
+
+    var grupos=agruparItens(itens,grupo);
+    var icon1=grupo==='conta'?'Conta':'Departamento';
+    var icon2=grupo==='conta'?'Departamento':'Conta';
+    var gHtml='';
+
+    if (!itens.length) {
+      gHtml='<p style="text-align:center;color:#94a3b8;padding:25px">Nenhuma pendência selecionada.</p>';
+    } else {
+      Object.keys(grupos).sort().forEach(function(k1){
+        var sub=grupos[k1];
+        var totI=Object.keys(sub).reduce(function(s,k){return s+sub[k].length;},0);
+        var totV=Object.keys(sub).reduce(function(s,k){return s+sub[k].reduce(function(ss,i){return ss+(Number(i.valor)||0);},0);},0);
+        var vBadge=totV>0?'<span class="cb2">'+fmtValor(totV)+'</span>':'';
+        gHtml+='<div class="rg"><div class="rg-h">'+
+               '<div><span class="rg-lbl">'+icon1+'</span> <strong>'+esc(k1)+'</strong></div>'+
+               '<div style="display:flex;gap:8px;align-items:center">'+vBadge+
+               '<span class="cb">'+totI+' item'+(totI!==1?'s':'')+'</span></div></div>';
+        Object.keys(sub).sort().forEach(function(k2){
+          var items=sub[k2];
+          var subV=items.reduce(function(s,i){return s+(Number(i.valor)||0);},0);
+          var subVStr=subV>0?'<span class="sv">'+fmtValor(subV)+'</span>':'';
+          gHtml+='<div class="dh"><div><span class="rg-lbl2">'+icon2+'</span> '+esc(k2)+'</div>'+
+                 '<div style="display:flex;gap:10px;align-items:center">'+subVStr+
+                 '<span style="color:#94a3b8;font-size:.75rem">'+items.length+' item'+(items.length!==1?'s':'')+'</span></div></div>'+
+                 '<div class="di">';
+          items.forEach(function(item,n){
+            var bs='background:#fef3c7;color:#92400e',bt=item.status;
+            if(item.status==='Encerrado')      {bs='background:#d1fae5;color:#065f46';bt='Encerrada';}
+            else if(item.mesAbertura<mes)       {bs='background:#fee2e2;color:#991b1b';bt='Herdada';}
+            else if(item.status==='Em Análise') {bs='background:#e0e7ff;color:#3730a3';}
+            var vStr=item.valor?'<div class="iv">'+fmtValor(item.valor)+'</div>':'';
+            var anHtm=comAn&&item.anotacoes?'<div class="anot">'+item.anotacoes+'</div>':'';
+            gHtml+='<div class="ri">'+
+                   '<span class="rn">'+(n+1)+'.</span>'+
+                   '<span class="bd" style="'+bs+'">'+bt+'</span>'+
+                   '<div class="rc"><strong>'+esc(item.titulo)+'</strong>'+
+                   '<div class="mt">'+item.area+' &nbsp;·&nbsp; Abertura: '+fmtMes(item.mesAbertura)+' &nbsp;·&nbsp; Prev. Enc.: '+fmtMes(item.mesEncerramento)+'</div>'+
+                   vStr+anHtm+'</div></div>';
+          });
+          gHtml+='</div>';
+        });
+        gHtml+='</div>';
+      });
+    }
+
+    var selInfo = (checkedIds.length < todosItens.length)
+      ? '<br><span style="color:#d97706;font-weight:600">⚠ Exportação parcial: '+checkedIds.length+' de '+todosItens.length+' itens selecionados</span>'
+      : '';
+
+    var w=window.open('','_blank');
+    w.document.write('<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">'+
+'<title>Relatório '+fmtMes(mes)+'</title><style>'+
+'*{box-sizing:border-box;margin:0;padding:0}'+
+'body{font-family:"Segoe UI",Arial,sans-serif;font-size:13px;color:#1e293b;background:#fff;padding:30px 40px}'+
+'.hdr{padding-bottom:16px;margin-bottom:18px;border-bottom:3px solid #0284c7;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start}'+
+'.hdr h1{font-size:1.2rem;color:#0f172a;font-weight:700;margin-bottom:6px}'+
+'.hdr .meta{font-size:.8rem;color:#475569;line-height:1.9}'+
+'.hdr .gd{text-align:right;font-size:.75rem;color:#94a3b8;white-space:nowrap}'+
+'.para-box{background:#f0f9ff;border:1px solid #bae6fd;border-radius:6px;padding:10px 14px;margin-bottom:18px;font-size:.85rem}'+
+'.para-box .lbl{font-size:.72rem;color:#0284c7;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}'+
+'.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:0;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;margin-bottom:18px}'+
+'.sg{padding:11px 8px;text-align:center;border-right:1px solid #e2e8f0}'+
+'.sg:last-child{border-right:none}'+
+'.sg .n{font-size:1.5rem;font-weight:700;color:#334155}'+
+'.sg .l{font-size:.63rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.3px;margin-top:2px}'+
+'.sec-title{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #e2e8f0}'+
+'.area-table{width:100%;border-collapse:collapse;margin-bottom:18px;font-size:.82rem}'+
+'.area-table th{background:#f8fafc;padding:6px 10px;text-align:left;font-weight:600;color:#475569;border:1px solid #e2e8f0}'+
+'.area-table td{padding:6px 10px;border:1px solid #f1f5f9}'+
+'.area-table tr:nth-child(even) td{background:#fafafa}'+
+'.rg{margin-bottom:12px;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;page-break-inside:avoid}'+
+'.rg-h{background:#f0f9ff;padding:10px 15px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;border-bottom:1px solid #e2e8f0}'+
+'.rg-lbl{font-size:.67rem;font-weight:700;text-transform:uppercase;color:#0284c7;background:#dbeafe;padding:1px 5px;border-radius:3px;margin-right:4px}'+
+'.rg-lbl2{font-size:.67rem;font-weight:700;text-transform:uppercase;color:#64748b;background:#f1f5f9;padding:1px 5px;border-radius:3px;margin-right:4px}'+
+'.rg-h strong{color:#0284c7;font-size:.92rem}'+
+'.cb{background:#0284c7;color:white;padding:2px 8px;border-radius:10px;font-size:.71rem;font-weight:700}'+
+'.cb2{background:#d1fae5;color:#065f46;padding:2px 8px;border-radius:10px;font-size:.71rem;font-weight:700}'+
+'.sv{color:#059669;font-weight:600;font-size:.8rem}'+
+'.dh{background:#f8fafc;padding:7px 15px;font-size:.77rem;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:.4px;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center}'+
+'.di{padding:0 15px}'+
+'.ri{display:flex;align-items:flex-start;gap:8px;padding:9px 0;border-bottom:1px solid #f8fafc}'+
+'.ri:last-child{border-bottom:none}'+
+'.rn{font-size:.72rem;color:#94a3b8;min-width:18px;text-align:right;padding-top:3px;flex-shrink:0}'+
+'.rc{flex:1;min-width:0}'+
+'.rc strong{font-size:.88rem;color:#1e293b}'+
+'.mt{font-size:.74rem;color:#94a3b8;margin-top:2px}'+
+'.bd{padding:3px 7px;border-radius:4px;font-size:.71rem;font-weight:700;white-space:nowrap;flex-shrink:0}'+
+'.iv{font-size:.76rem;color:#059669;font-weight:600;margin-top:3px}'+
+'.anot{font-size:.8rem;line-height:1.6;color:#475569;margin-top:10px;padding:10px 12px;background:#f8fafc;border-radius:6px;border-left:3px solid #cbd5e1}'+
+'.anot img{max-width:100%;height:auto;border-radius:4px;border:1px solid #e2e8f0;margin:6px 0;display:block}'+
+'.footer{margin-top:28px;padding-top:14px;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:15px}'+
+'.sig-area{font-size:.78rem;color:#475569}'+
+'.sig-line{border-bottom:1px solid #334155;width:240px;margin-top:32px;margin-bottom:4px}'+
+'.brand{font-size:.73rem;color:#94a3b8;text-align:right}'+
+'.pb{display:inline-block;margin-top:18px;background:#0284c7;color:white;border:none;padding:10px 22px;border-radius:6px;cursor:pointer;font-size:.88rem;font-weight:600}'+
+'@media print{.pb{display:none}body{padding:15px 20px}}'+
+'</style></head><body>'+
+'<div class="hdr"><div><h1>📋 Relatório de Pendências Contábeis</h1>'+
+'<div class="meta">Competência: <strong>'+fmtMes(mes)+'</strong> &nbsp;|&nbsp; Conta: <strong>'+esc(contaF)+'</strong> &nbsp;|&nbsp; Área: <strong>'+esc(areaF)+'</strong><br>'+
+'Status: <strong>'+stLabel+'</strong> &nbsp;|&nbsp; Agrupamento: <strong>'+agLbl+'</strong>'+selInfo+
+(comAn?'<br>✅ Anotações incluídas':'')+'</div></div>'+
+'<div class="gd">Gerado em:<br><strong>'+new Date().toLocaleString('pt-BR')+'</strong></div></div>'+
+(para?'<div class="para-box"><div class="lbl">Para / Destinatário</div><strong>'+esc(para)+'</strong></div>':'')+
+(optRes?'<div class="summary-grid">'+
+'<div class="sg"><div class="n">'+itens.length+'</div><div class="l">Selecionados</div></div>'+
+'<div class="sg"><div class="n" style="color:#dc2626">'+pend+'</div><div class="l">Pendentes</div></div>'+
+'<div class="sg"><div class="n" style="color:#d97706">'+emA+'</div><div class="l">Em Análise</div></div>'+
+'<div class="sg"><div class="n" style="color:#059669">'+enc+'</div><div class="l">Encerradas</div></div>'+
+'<div class="sg"><div class="n" style="color:#dc2626">'+herd+'</div><div class="l">Herdadas</div></div>'+
+'<div class="sg"><div class="n">'+uC+'</div><div class="l">Contas</div></div>'+
+'<div class="sg"><div class="n">'+uD+'</div><div class="l">Deptos</div></div>'+
+(totR>0?'<div class="sg"><div class="n" style="font-size:.95rem;color:#059669">'+fmtValor(totR)+'</div><div class="l">Valor Total</div></div>':'')+
+'</div>':'')+
+(optAr&&areaRows?'<div class="sec-title">Distribuição por Área</div>'+
+'<table class="area-table"><thead><tr><th>Área</th><th style="text-align:center">Qtd</th><th style="text-align:right">Valor</th></tr></thead>'+
+'<tbody>'+areaRows+'</tbody></table>':'')+
+'<div class="sec-title" style="margin-bottom:12px">Pendências</div>'+
+gHtml+
+'<div class="footer">'+
+(optSig?'<div class="sig-area">Responsável Contabilidade<div class="sig-line"></div><span style="font-size:.71rem;color:#94a3b8">Assinatura &nbsp;&nbsp;&nbsp;&nbsp; Data: ___/___/______</span></div>':'<div></div>')+
+'<div class="brand">Sistema de Pendências Contábeis<br>'+new Date().toLocaleString('pt-BR')+'</div></div>'+
+'<button class="pb" onclick="window.print()">🖨️ Imprimir / Salvar como PDF</button>'+
+'</body></html>');
+    w.document.close();
+  }
+
+
+  function configurarPaste(elId) {
+    document.getElementById(elId).addEventListener('paste', function(e) {
+      var items = (e.clipboardData||e.originalEvent.clipboardData).items;
+      for (var i=0; i<items.length; i++) {
+        if (items[i].type.indexOf('image')===0) {
+          e.preventDefault();
+          (function(blob){
+            var reader = new FileReader();
+            reader.onload = function(ev) {
+              var img = new Image();
+              img.onload = function() {
+                var c=document.createElement('canvas');
+                var mw=800, w=img.width, h=img.height;
+                if(w>mw){h=Math.round(h*mw/w);w=mw;}
+                c.width=w; c.height=h;
+                c.getContext('2d').drawImage(img,0,0,w,h);
+                document.execCommand('insertImage',false,c.toDataURL('image/jpeg',0.75));
+              };
+              img.src=ev.target.result;
+            };
+            reader.readAsDataURL(blob);
+          })(items[i].getAsFile());
+        }
+      }
+    });
+  }
+
+  function ajustarMes(id, delta) {
+    var el = document.getElementById(id);
+    if (!el.value) { el.value = new Date().toISOString().slice(0,7); }
+    var parts = el.value.split('-');
+    var d = new Date(parseInt(parts[0]), parseInt(parts[1])-1+delta, 1);
+    el.value = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  }
+
+  function toggleCalc() {
+    calcAberta = !calcAberta;
+    document.getElementById('calcWidget').style.display = calcAberta?'block':'none';
+  }
+
+  function calcBtn(val) {
+    var d = document.getElementById('calcDisplay');
+    if (val==='C') { calcValor='0'; }
+    else if (val==='=') {
+      try { calcValor=String(eval(calcValor)); if(!isFinite(Number(calcValor)))throw 0; }
+      catch(ex) { calcValor='Erro'; setTimeout(function(){calcValor='0';d.innerText='0';},1200); }
+    } else {
+      calcValor = (calcValor==='0' && '+-*/('.indexOf(val)<0) ? val : calcValor+val;
+    }
+    d.innerText = calcValor;
+  }
+
+  function tornarArrastavel(widget, header) {
+    var x1=0,y1=0,x2=0,y2=0;
+    header.onmousedown = function(e) {
+      e.preventDefault(); x2=e.clientX; y2=e.clientY;
+      document.onmousemove = function(e2) {
+        x1=x2-e2.clientX; y1=y2-e2.clientY; x2=e2.clientX; y2=e2.clientY;
+        widget.style.top=(widget.offsetTop-y1)+'px';
+        widget.style.left=(widget.offsetLeft-x1)+'px';
+      };
+      document.onmouseup = function(){ document.onmousemove=null; document.onmouseup=null; };
+    };
+  }
+
+  function exportarJSON() {
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([JSON.stringify({pendencias:db,anotacoesGerais:anotacoesDb,deptMap:deptMap},null,2)],{type:'application/json'}));
+    a.download='backup_contabil_'+new Date().toISOString().slice(0,10)+'.json';
+    a.click();
+  }
+
+  function importarJSON(e) {
+    var file=e.target.files[0]; if(!file)return;
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      try{
+        var dados=JSON.parse(ev.target.result);
+        if(Array.isArray(dados)){db=dados;}
+        else{
+          db=dados.pendencias||[];
+          anotacoesDb=dados.anotacoesGerais||{};
+          deptMap=dados.deptMap||{};
+          localStorage.setItem('fechamento_anotacoes_gerais',JSON.stringify(anotacoesDb));
+          localStorage.setItem('fechamento_dept_map',JSON.stringify(deptMap));
+        }
+        renderApp(); alert('Backup importado com sucesso!');
+      }catch(ex){alert('Erro ao importar o arquivo JSON.');}
+    };
+    reader.readAsText(file);
+  }
+</script>
+</body>
+</html>

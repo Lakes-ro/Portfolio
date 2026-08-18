@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Gestão Financeira (MentorFin) — Roger Almeida</title>
+    <meta name="description" content="Como funciona a plataforma de gestão financeira desenvolvida por Roger Almeida: classificação automática de transações, dashboards por cliente e arquitetura em Supabase.">
+    <meta name="theme-color" content="#6366f1">
+
+    <link rel="icon" type="image/png" href="logo_titulo.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* ===== Página de apresentação — Gestão Financeira ===== */
+        body { cursor: auto; }
+        .gf-topbar {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--bg-overlay);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+        .gf-topbar-inner {
+            max-width: 960px; margin: 0 auto;
+            padding: var(--spacing-md) var(--spacing-lg);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .gf-back {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--text-secondary); text-decoration: none;
+            font-size: 0.9rem; font-weight: 500;
+            transition: color var(--transition-normal);
+        }
+        .gf-back:hover { color: var(--primary-color); }
+        .gf-badge {
+            font-family: var(--font-mono);
+            font-size: 0.75rem; color: var(--text-muted);
+            border: 1px solid var(--bg-tertiary);
+            padding: 4px 10px; border-radius: var(--radius-full);
+        }
+
+        .gf-wrap { max-width: 960px; margin: 0 auto; padding: 0 var(--spacing-lg); }
+
+        .gf-hero { padding: var(--spacing-3xl) 0 var(--spacing-xl); }
+        .gf-eyebrow {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem; letter-spacing: 0.05em;
+            color: var(--accent-color); text-transform: uppercase;
+            margin-bottom: var(--spacing-md);
+        }
+        .gf-eyebrow::before {
+            content: ''; width: 8px; height: 8px; border-radius: 50%;
+            background: var(--accent-color); display: inline-block;
+        }
+        .gf-title {
+            font-size: clamp(2rem, 5vw, 3.25rem);
+            font-weight: 700; line-height: 1.1;
+            margin-bottom: var(--spacing-md);
+        }
+        .gf-title span {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gf-lede {
+            font-size: 1.15rem; color: var(--text-secondary);
+            max-width: 640px; line-height: 1.75;
+        }
+
+        .gf-shot {
+            margin: var(--spacing-2xl) 0;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            border: 1px solid var(--bg-tertiary);
+            box-shadow: var(--shadow-xl);
+        }
+        .gf-shot img { width: 100%; display: block; }
+
+        .gf-section { padding: var(--spacing-2xl) 0; border-top: 1px solid var(--bg-tertiary); }
+        .gf-section h2 {
+            font-size: 1.5rem; font-weight: 700; margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+        }
+        .gf-section > p {
+            color: var(--text-secondary); line-height: 1.75; max-width: 720px;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .gf-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+        .gf-card {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-tertiary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            transition: border-color var(--transition-normal), transform var(--transition-normal);
+        }
+        .gf-card:hover { border-color: var(--primary-color); transform: translateY(-3px); }
+        .gf-card i {
+            font-size: 1.1rem; color: var(--primary-color);
+            width: 38px; height: 38px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(99, 102, 241, 0.12);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+        }
+        .gf-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; color: var(--text-primary); }
+        .gf-card p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin: 0; }
+
+        .gf-stack {
+            display: flex; flex-wrap: wrap; gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+        .gf-stack-item {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--bg-card);
+            border: 1px solid var(--bg-tertiary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md) var(--spacing-lg);
+            flex: 1 1 260px;
+        }
+        .gf-stack-item i { color: var(--accent-color); font-size: 1.2rem; flex-shrink: 0; }
+        .gf-stack-item strong { display: block; font-size: 0.9rem; color: var(--text-primary); }
+        .gf-stack-item span { display: block; font-size: 0.82rem; color: var(--text-muted); }
+
+        .gf-cta {
+            margin: var(--spacing-2xl) 0 var(--spacing-3xl);
+            text-align: center;
+            background: var(--bg-card);
+            border: 1px solid var(--bg-tertiary);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl) var(--spacing-lg);
+        }
+        .gf-cta h2 { margin-bottom: 8px; }
+        .gf-cta p { color: var(--text-muted); margin-bottom: var(--spacing-lg); }
+        .gf-cta-buttons {
+            display: flex; gap: var(--spacing-md); justify-content: center; flex-wrap: wrap;
+        }
+        .gf-lock-note {
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            font-size: 0.8rem; color: var(--text-muted);
+            margin-top: var(--spacing-md);
+        }
+
+        .gf-footer {
+            text-align: center; padding: var(--spacing-xl) 0;
+            color: var(--text-muted); font-size: 0.85rem;
+            border-top: 1px solid var(--bg-tertiary);
+        }
+        .gf-footer a { color: var(--primary-color); text-decoration: none; }
+
+        @media (max-width: 600px) {
+            .gf-hero { padding-top: var(--spacing-xl); }
+            .gf-cta-buttons { flex-direction: column; }
+            .gf-cta-buttons .btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="gf-topbar">
+        <div class="gf-topbar-inner">
+            <a href="index.html#projetos" class="gf-back">
+                <i class="fas fa-arrow-left"></i> Voltar ao portfólio
+            </a>
+            <span class="gf-badge">Estudo de caso</span>
+        </div>
+    </div>
+
+    <main class="gf-wrap">
+
+        <section class="gf-hero">
+            <div class="gf-eyebrow">Projeto privado · Acesso por login</div>
+            <h1 class="gf-title">Gestão Financeira <span>(MentorFin)</span></h1>
+            <p class="gf-lede">
+                Plataforma que une a precisão contábil à agilidade do desenvolvimento web moderno.
+                Um motor de IA classifica as transações automaticamente e gera indicadores em tempo real,
+                para que o cliente veja a saúde financeira do negócio sem precisar organizar planilha nenhuma.
+            </p>
+
+            <div class="gf-shot">
+                <img src="gestao-financeira-preview.png" alt="Painel do administrador do MentorFin, mostrando os dashboards financeiros dos clientes">
+            </div>
+        </section>
+
+        <section class="gf-section">
+            <h2>O que o sistema faz</h2>
+            <p>
+                O MentorFin é o painel que o administrador usa para acompanhar a saúde financeira de vários clientes
+                ao mesmo tempo. Cada cliente tem seu próprio dashboard, com status de "Saudável" ou "Sem dados"
+                calculado a partir das transações lançadas — e todo o resto da rotina contábil do dia a dia
+                (categorias, metas, planejamento e razonete) vive dentro do mesmo painel.
+            </p>
+
+            <div class="gf-grid">
+                <div class="gf-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Clientes</h3>
+                    <p>Cadastro e organização de cada cliente atendido pela plataforma, com acesso individual ao próprio dashboard.</p>
+                </div>
+                <div class="gf-card">
+                    <i class="fas fa-tags"></i>
+                    <h3>Categorias</h3>
+                    <p>Estrutura de categorias que sustenta a classificação automática das transações feita pela IA.</p>
+                </div>
+                <div class="gf-card">
+                    <i class="fas fa-chart-pie"></i>
+                    <h3>Dashboards</h3>
+                    <p>Visão em tempo real da saúde financeira de cada cliente, com indicadores de status à primeira vista.</p>
+                </div>
+                <div class="gf-card">
+                    <i class="fas fa-bullseye"></i>
+                    <h3>Metas</h3>
+                    <p>Definição de metas financeiras por cliente, para acompanhar progresso ao longo do tempo.</p>
+                </div>
+                <div class="gf-card">
+                    <i class="fas fa-calendar-check"></i>
+                    <h3>Planejamentos</h3>
+                    <p>Planejamento financeiro estruturado, servindo de referência para comparar previsto x realizado.</p>
+                </div>
+                <div class="gf-card">
+                    <i class="fas fa-table-cells"></i>
+                    <h3>Razonete</h3>
+                    <p>Livro-razão em formato de T (razonete), a mesma lógica contábil clássica, só que digital e automatizada.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="gf-section">
+            <h2>Como foi construído</h2>
+            <p>
+                Arquitetura enxuta, pensada para ser rápida de carregar e barata de manter — sem framework pesado
+                no front-end e sem servidor próprio para administrar.
+            </p>
+            <div class="gf-stack">
+                <div class="gf-stack-item">
+                    <i class="fas fa-database"></i>
+                    <div>
+                        <strong>Supabase</strong>
+                        <span>Banco de dados, autenticação e API em tempo real</span>
+                    </div>
+                </div>
+                <div class="gf-stack-item">
+                    <i class="fab fa-js"></i>
+                    <div>
+                        <strong>Vanilla JavaScript</strong>
+                        <span>Interface leve, sem framework, focada em performance</span>
+                    </div>
+                </div>
+                <div class="gf-stack-item">
+                    <i class="fas fa-robot"></i>
+                    <div>
+                        <strong>IA para classificação</strong>
+                        <span>Categoriza transações automaticamente a partir dos lançamentos</span>
+                    </div>
+                </div>
+                <div class="gf-stack-item">
+                    <i class="fas fa-lock"></i>
+                    <div>
+                        <strong>Login por cliente</strong>
+                        <span>Cada cliente só enxerga os próprios dados</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="gf-cta">
+            <h2>Quer ver por dentro?</h2>
+            <p>O sistema é privado — o acesso completo é por login de cliente.</p>
+            <div class="gf-cta-buttons">
+                <a href="https://gestao-gama.vercel.app/" class="btn btn-primary" target="_blank" rel="noopener">
+                    <i class="fas fa-arrow-up-right-from-square"></i> Acessar o sistema
+                </a>
+                <a href="index.html#contato" class="btn btn-outline">
+                    <i class="fas fa-envelope"></i> Falar com o Roger
+                </a>
+            </div>
+            <p class="gf-lock-note"><i class="fas fa-lock"></i> Tela de login — sem uma conta de cliente, você não passa dela.</p>
+        </section>
+
+    </main>
+
+    <footer class="gf-footer">
+        <a href="index.html">← Voltar para o portfólio de Roger Almeida</a>
+    </footer>
+
+</body>
+</html>
