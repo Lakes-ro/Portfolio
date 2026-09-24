@@ -82,6 +82,85 @@
         }
         .gf-shot img { width: 100%; display: block; }
 
+        .gf-shot-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+            margin: var(--spacing-xl) 0;
+        }
+        .gf-figure {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--bg-tertiary);
+            box-shadow: var(--shadow-lg);
+            background: var(--bg-card);
+        }
+        .gf-figure .gf-figure-img-wrap {
+            position: relative;
+            cursor: zoom-in;
+            overflow: hidden;
+        }
+        .gf-figure img { width: 100%; display: block; transition: transform var(--transition-slow); }
+        .gf-figure .gf-figure-img-wrap:hover img { transform: scale(1.03); }
+        .gf-figure .gf-zoom-hint {
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(15, 23, 42, 0.45);
+            opacity: 0; transition: opacity var(--transition-normal);
+        }
+        .gf-figure .gf-zoom-hint i {
+            width: 44px; height: 44px; border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff; display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+        }
+        .gf-figure .gf-figure-img-wrap:hover .gf-zoom-hint { opacity: 1; }
+        .gf-figure figcaption {
+            padding: 10px var(--spacing-md);
+            font-size: 0.8rem; color: var(--text-muted);
+            border-top: 1px solid var(--bg-tertiary);
+        }
+        @media (max-width: 700px) {
+            .gf-shot-row { grid-template-columns: 1fr; }
+        }
+
+        /* ===== Lightbox (ampliar imagem) ===== */
+        .gf-lightbox {
+            position: fixed; inset: 0; z-index: 5000;
+            background: rgba(2, 6, 23, 0.94);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+            cursor: zoom-out;
+        }
+        .gf-lightbox.active { opacity: 1; visibility: visible; }
+        .gf-lightbox-content {
+            max-width: min(92vw, 1100px);
+            max-height: 90vh;
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
+        }
+        .gf-lightbox-content img {
+            max-width: 100%; max-height: 80vh;
+            object-fit: contain;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            cursor: default;
+        }
+        .gf-lightbox-caption {
+            color: #f1f5f9; font-size: 0.9rem; text-align: center; max-width: 700px;
+        }
+        .gf-lightbox-close {
+            position: absolute; top: 20px; right: 24px;
+            width: 44px; height: 44px; border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.08);
+            color: #f1f5f9; font-size: 1.1rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .gf-lightbox-close:hover { background: rgba(255, 255, 255, 0.18); transform: rotate(90deg); }
+
         .gf-section { padding: var(--spacing-2xl) 0; border-top: 1px solid var(--bg-tertiary); }
         .gf-section h2 {
             font-size: 1.5rem; font-weight: 700; margin-bottom: var(--spacing-md);
@@ -234,6 +313,23 @@
                     <p>Livro-razão em formato de T (razonete), a mesma lógica contábil clássica, só que digital e automatizada.</p>
                 </div>
             </div>
+
+            <div class="gf-shot-row">
+                <figure class="gf-figure">
+                    <div class="gf-figure-img-wrap" data-lightbox-trigger>
+                        <img src="mentorfin-dashboard-resumo.png" alt="Resumo do dashboard do MentorFin com KPIs de custo de sobrevivência, estilo de vida, investimentos e dívidas, taxa de poupança e gráficos de distribuição por categoria">
+                        <div class="gf-zoom-hint"><i class="fas fa-magnifying-glass-plus"></i></div>
+                    </div>
+                    <figcaption>Resumo do dashboard: KPIs e gráficos recalculados a cada novo lançamento do cliente.</figcaption>
+                </figure>
+                <figure class="gf-figure">
+                    <div class="gf-figure-img-wrap" data-lightbox-trigger>
+                        <img src="mentorfin-balancete.png" alt="Balancete de Verificação do MentorFin gerado automaticamente a partir dos lançamentos, com opções de exportar em PDF ou ampliar e anotar">
+                        <div class="gf-zoom-hint"><i class="fas fa-magnifying-glass-plus"></i></div>
+                    </div>
+                    <figcaption>Balancete de Verificação gerado automaticamente, com exportação em PDF.</figcaption>
+                </figure>
+            </div>
         </section>
 
         <section class="gf-section">
@@ -293,6 +389,66 @@
     <footer class="gf-footer">
         <a href="index.html">← Voltar para o portfólio de Roger Almeida</a>
     </footer>
+
+    <!-- ===== LIGHTBOX — ampliar imagem ===== -->
+    <div id="gf-lightbox" class="gf-lightbox" aria-hidden="true">
+        <button class="gf-lightbox-close" id="gf-lightbox-close" aria-label="Fechar imagem ampliada">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="gf-lightbox-content">
+            <img id="gf-lightbox-image" src="" alt="">
+            <p class="gf-lightbox-caption" id="gf-lightbox-caption"></p>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const lightbox = document.getElementById('gf-lightbox');
+            const lightboxImg = document.getElementById('gf-lightbox-image');
+            const lightboxCaption = document.getElementById('gf-lightbox-caption');
+            const btnClose = document.getElementById('gf-lightbox-close');
+            const triggers = document.querySelectorAll('[data-lightbox-trigger]');
+
+            function open(imgEl) {
+                lightboxImg.src = imgEl.getAttribute('src');
+                lightboxImg.alt = imgEl.getAttribute('alt') || '';
+                const figcaption = imgEl.closest('figure') ? imgEl.closest('figure').querySelector('figcaption') : null;
+                lightboxCaption.textContent = figcaption ? figcaption.textContent : '';
+                lightbox.classList.add('active');
+                lightbox.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function close() {
+                lightbox.classList.remove('active');
+                lightbox.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            }
+
+            triggers.forEach(function (trigger) {
+                const img = trigger.querySelector('img');
+                if (!img) return;
+                trigger.addEventListener('click', function () { open(img); });
+                trigger.setAttribute('tabindex', '0');
+                trigger.setAttribute('role', 'button');
+                trigger.setAttribute('aria-label', 'Ampliar imagem');
+                trigger.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        open(img);
+                    }
+                });
+            });
+
+            btnClose.addEventListener('click', close);
+            lightbox.addEventListener('click', function (e) {
+                if (e.target === lightbox) close();
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && lightbox.classList.contains('active')) close();
+            });
+        })();
+    </script>
 
 </body>
 </html>
