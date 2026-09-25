@@ -72,10 +72,16 @@
     .export-opts{padding:12px 15px;background:rgba(0,0,0,.15);border-radius:8px;margin-top:12px;border:1px solid var(--border)}
     .eo-title{font-size:.72rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}
     .eo-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    .color-swatch{width:22px;height:22px;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:.15s;flex-shrink:0;padding:0}
+    .color-swatch.active{border-color:white;box-shadow:0 0 0 2px var(--border)}
+    .color-swatch:hover{transform:scale(1.2)}
+    .eo-sep{border:none;border-top:1px solid var(--border);margin:10px 0}
+    textarea{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:9px 10px;border-radius:6px;font-size:.85rem;resize:vertical;font-family:inherit}
+    textarea:focus{outline:none;border-color:var(--accent)}
     .item-check{width:14px!important;height:14px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;margin-top:3px}
     .group-cb{width:13px!important;height:13px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
     .dept-header input[type=checkbox]{margin-right:4px}
-    /* LIGHTBOX */
+        /* LIGHTBOX */
     #lightbox{display:none;position:fixed;z-index:9999;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.94);align-items:center;justify-content:center;cursor:zoom-out}
     #lightbox.active{display:flex}
     #lightbox img{max-width:95vw;max-height:92vh;border-radius:6px;box-shadow:0 0 50px rgba(0,0,0,.9);cursor:default}
@@ -144,6 +150,8 @@
     <div class="month-wrap" ><input type="month" id="mesTrabalho" class="month-picker" onchange="mudouMes()"><div class="month-navs"><button type="button" class="month-nav" onclick="ajustarMes('mesTrabalho',+1);mudouMes()">▲</button><button type="button" class="month-nav" onclick="ajustarMes('mesTrabalho',-1);mudouMes()">▼</button></div></div>
     <button class="btn" style="background:var(--success);color:white" onclick="abrirModalRelatorio()">📊 Relatório</button>
     <button class="btn btn-secondary" onclick="abrirModalDeptos()">🏢 Departamentos</button>
+    <button class="btn btn-secondary" onclick="abrirModalVerbas()">🏷️ Verbas</button>
+    <button class="btn btn-secondary" onclick="abrirModalFunc()">👥 Funcionários</button>
     <button class="btn" style="background:var(--info);color:white" onclick="abrirModalAnotacoes()">📝 Anotações</button>
     <button class="btn" style="background:var(--warning);color:#000" onclick="toggleCalc()">🧮 Calculadora</button>
     <button class="btn" onclick="novaPendencia()">+ Nova</button>
@@ -163,6 +171,7 @@
   <div class="card" style="min-height:0;overflow:hidden;">
     <div class="filters">
       <button class="filter-btn active" onclick="setFiltro('ativas',this)">Visão do Mês</button>
+      <button class="filter-btn" onclick="setFiltro('pendencias_mes',this)">📅 Do Mês</button>
       <button class="filter-btn" onclick="setFiltro('herdadas',this)">🔴 Herdadas</button>
       <button class="filter-btn" onclick="setFiltro('encerradas',this)">🟢 Encerradas</button>
       <button class="filter-btn" onclick="setFiltro('todas_historico',this)">📁 Histórico</button>
@@ -239,6 +248,7 @@
           <button type="button" onclick="document.execCommand('bold')"><b>N</b></button>
           <button type="button" onclick="document.execCommand('italic')"><i>I</i></button>
           <button type="button" onclick="document.execCommand('insertUnorderedList')">• Lista</button>
+          <button type="button" onclick="abrirSeletorArquivo('anotacoes')">📎 Arquivo</button>
         </div>
         <div id="anotacoes" class="rich-editor" contenteditable="true" placeholder="Textos, check-lists ou Ctrl+V para colar prints…"></div>
       </div>
@@ -261,6 +271,7 @@
       <button type="button" onclick="document.execCommand('bold')"><b>N</b></button>
       <button type="button" onclick="document.execCommand('italic')"><i>I</i></button>
       <button type="button" onclick="document.execCommand('insertUnorderedList')">• Lista</button>
+      <button type="button" onclick="abrirSeletorArquivo('anotacoesGerais')">📎 Arquivo</button>
     </div>
     <div id="anotacoesGerais" class="rich-editor" style="min-height:380px" contenteditable="true" placeholder="Caderno livre do mês… Ctrl+V para prints."></div>
     <div class="actions" style="margin-top:15px">
@@ -303,6 +314,7 @@
         <label>Status</label>
         <select id="relStatus">
           <option value="">Todos (ativos no mês)</option>
+          <option value="pendencias_mes">📅 Abertas no mês</option>
           <option value="ativas">Não encerradas</option>
           <option value="Pendente">Pendente</option>
           <option value="Em Análise">Em Análise</option>
@@ -320,12 +332,50 @@
         <label>Para (Destinatário)</label>
         <input type="text" id="relPara" placeholder="Ex: Depto Recursos Humanos">
       </div>
-      <div style="display:flex;align-items:flex-end">
-        <button class="btn" onclick="gerarRelatorio()" style="width:100%">🔍 Gerar</button>
+      <div style="display:flex;align-items:flex-end;gap:6px">
+        <button class="btn" onclick="gerarRelatorio()" style="flex:1">🔍 Gerar</button>
+        <button class="btn btn-secondary" onclick="exportarRelatorio()" style="padding:9px 13px;font-size:1rem" title="Exportar / Imprimir sem re-gerar">📤</button>
       </div>
     </div>
     <div class="export-opts">
-      <div class="eo-title">⚙ Opções do documento exportado</div>
+      <div class="eo-title">📄 Personalizar Documento</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div class="form-group" style="margin:0">
+          <label>Organização / Empresa</label>
+          <input type="text" id="relOrg" placeholder="Ex: ADRA Brasil">
+        </div>
+        <div class="form-group" style="margin:0">
+          <label>De (Remetente)</label>
+          <input type="text" id="relDe" placeholder="Ex: Depto Contabilidade">
+        </div>
+        <div class="form-group" style="margin:0">
+          <label>Signatário (quem assina)</label>
+          <input type="text" id="relSignatario" placeholder="Ex: Maria Costa">
+        </div>
+        <div class="form-group" style="margin:0">
+          <label>Cargo do signatário</label>
+          <input type="text" id="relCargo" placeholder="Ex: Contador Responsável">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:10px">
+        <label>Título do relatório</label>
+        <input type="text" id="relTitulo" placeholder="Relatório de Pendências Contábeis">
+      </div>
+      <div class="form-group" style="margin-bottom:10px">
+        <label>Observações finais (aparecem antes da assinatura)</label>
+        <textarea id="relObs" rows="2" placeholder="Ex: Favor regularizar os itens pendentes até o fechamento do mês."></textarea>
+      </div>
+      <hr class="eo-sep">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+        <span style="font-size:.79rem;color:var(--text-muted)">Cor do tema:</span>
+        <button class="color-swatch active" data-tema="azul"    style="background:#0284c7" onclick="setTema('azul')"    title="Azul"></button>
+        <button class="color-swatch"        data-tema="verde"   style="background:#059669" onclick="setTema('verde')"   title="Verde"></button>
+        <button class="color-swatch"        data-tema="laranja" style="background:#d97706" onclick="setTema('laranja')" title="Laranja"></button>
+        <button class="color-swatch"        data-tema="roxo"    style="background:#7c3aed" onclick="setTema('roxo')"    title="Roxo"></button>
+        <button class="color-swatch"        data-tema="cinza"   style="background:#475569" onclick="setTema('cinza')"   title="Cinza"></button>
+        <span id="temaNome" style="font-size:.78rem;color:var(--accent);font-weight:600;margin-left:4px">Azul</span>
+      </div>
+      <hr class="eo-sep">
       <div class="eo-grid">
         <label class="checkbox-label"><input type="checkbox" id="relAnotacoes"> Anotações e imagens</label>
         <label class="checkbox-label"><input type="checkbox" id="optResumo" checked> Cards de resumo</label>
@@ -343,6 +393,7 @@
       </div>
       <div id="reportContent"></div>
       <div class="actions" style="margin-top:18px">
+        <button class="btn btn-secondary" onclick="document.getElementById('modalRelatorio').style.display='none'">✕ Fechar</button>
         <button class="btn btn-secondary" onclick="exportarRelatorio()">📤 Exportar / Imprimir</button>
       </div>
     </div>
@@ -377,6 +428,196 @@
     </div>
   </div>
 </div>
+
+
+<!-- MODAL VERBAS CONTÁBEIS -->
+<div id="modalVerbas" class="modal">
+  <div class="modal-content" style="max-width:640px">
+    <div class="modal-header">
+      <h2>🏷️ Verbas Contábeis</h2>
+      <button class="close-modal" onclick="fecharModalVerbas()">&times;</button>
+    </div>
+    <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:14px">
+      Mapeie contas contábeis para suas verbas. Exemplo: <strong>1135001 → 16900-Adiantamento Pessoal</strong>.
+      A verba será exibida junto ao número da conta em toda a interface.
+    </p>
+    <table style="margin-bottom:14px">
+      <thead><tr><th>Conta Contábil</th><th>Verba / Descrição</th><th style="width:40px"></th></tr></thead>
+      <tbody id="tabelaContaMap"></tbody>
+    </table>
+    <div style="display:grid;grid-template-columns:1fr 1.5fr auto;gap:8px;align-items:end">
+      <div class="form-group" style="margin:0">
+        <label>Conta Contábil</label>
+        <input type="text" id="contaMapKey" placeholder="Ex: 1135001">
+      </div>
+      <div class="form-group" style="margin:0">
+        <label>Verba / Descrição</label>
+        <input type="text" id="contaMapVal" placeholder="Ex: 16900-Adiantamento Pessoal">
+      </div>
+      <button class="btn" onclick="adicionarContaMapeamento()">Adicionar</button>
+    </div>
+    <div class="actions" style="margin-top:16px">
+      <button class="btn btn-secondary" onclick="fecharModalVerbas()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FUNCIONÁRIOS -->
+<div id="modalFunc" class="modal">
+  <div class="modal-content" style="max-width:1120px;width:96%;max-height:96vh;padding:20px;display:flex;flex-direction:column;gap:0">
+    <div class="modal-header" style="margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <h2>👥 Funcionários</h2>
+        <span id="funcStatBadge" style="font-size:.78rem;color:var(--text-muted)"></span>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button class="btn btn-secondary" onclick="novoFuncionario()" style="padding:7px 12px">+ Novo</button>
+        <button class="btn btn-secondary" onclick="abrirImportFunc()" style="padding:7px 12px">⬆ Importar CSV</button>
+        <button class="btn btn-secondary" onclick="exportarFuncCSV()" style="padding:7px 12px">⬇ Exportar</button>
+        <button class="close-modal" onclick="fecharModalFunc()">&times;</button>
+      </div>
+    </div>
+    <!-- search + mes filter -->
+    <div style="display:grid;grid-template-columns:1fr auto auto;gap:8px;margin-bottom:12px;align-items:center">
+      <input type="text" id="buscaFunc" placeholder="🔍 Buscar por nome ou matrícula…" oninput="renderFuncionarios()" style="padding:8px 10px;font-size:.85rem">
+      <div style="display:flex;align-items:center;gap:6px;white-space:nowrap">
+        <label style="font-size:.78rem;color:var(--text-muted);margin:0">Ver em:</label>
+        <div class="month-wrap" style="width:170px">
+          <input type="month" id="funcMesVer" onchange="renderFuncionarios()">
+          <div class="month-navs">
+            <button type="button" class="month-nav" onclick="ajustarMes('funcMesVer',+1);renderFuncionarios()">▲</button>
+            <button type="button" class="month-nav" onclick="ajustarMes('funcMesVer',-1);renderFuncionarios()">▼</button>
+          </div>
+        </div>
+      </div>
+      <select id="filtroStatusFunc" onchange="renderFuncionarios()" style="padding:8px;font-size:.82rem;width:120px">
+        <option value="">Todos</option>
+        <option value="Ativo">Ativos</option>
+        <option value="Inativo">Inativos</option>
+        <option value="Afastado">Afastados</option>
+      </select>
+    </div>
+    <!-- split panel -->
+    <div style="display:grid;grid-template-columns:1fr 440px;gap:16px;flex:1;min-height:0;overflow:hidden">
+      <!-- LIST -->
+      <div style="overflow-y:auto;border:1px solid var(--border);border-radius:8px">
+        <table style="width:100%;border-collapse:collapse">
+          <thead style="position:sticky;top:0;z-index:1;background:var(--card-bg)">
+            <tr>
+              <th style="padding:10px 12px;text-align:left;font-size:.78rem;color:var(--text-muted);border-bottom:1px solid var(--border)">Matrícula</th>
+              <th style="padding:10px 12px;text-align:left;font-size:.78rem;color:var(--text-muted);border-bottom:1px solid var(--border)">Nome</th>
+              <th style="padding:10px 12px;text-align:left;font-size:.78rem;color:var(--text-muted);border-bottom:1px solid var(--border)">Departamento</th>
+              <th style="padding:10px 12px;text-align:left;font-size:.78rem;color:var(--text-muted);border-bottom:1px solid var(--border)">Cargo</th>
+              <th style="padding:10px 12px;text-align:center;font-size:.78rem;color:var(--text-muted);border-bottom:1px solid var(--border)">Status</th>
+            </tr>
+          </thead>
+          <tbody id="listaFunc"></tbody>
+        </table>
+      </div>
+      <!-- FORM -->
+      <div id="funcFormPanel" class="card" style="overflow-y:auto;padding:16px">
+        <h3 id="funcFormTitulo" style="margin-bottom:14px;font-size:1rem">Selecione ou crie</h3>
+        <form id="funcForm" onsubmit="salvarFuncionario(event)">
+          <input type="hidden" id="funcId">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="form-group">
+              <label>Matrícula</label>
+              <input type="text" id="funcMatricula" placeholder="Ex: 12345" required>
+            </div>
+            <div class="form-group">
+              <label>Status</label>
+              <select id="funcStatus">
+                <option>Ativo</option><option>Inativo</option><option>Afastado</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Nome completo</label>
+            <input type="text" id="funcNome" placeholder="Ex: Ana Silva" required>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="form-group">
+              <label>E-mail</label>
+              <input type="email" id="funcEmail" placeholder="ana@empresa.com">
+            </div>
+            <div class="form-group">
+              <label>Mês de Admissão</label>
+              <div class="month-wrap">
+                <input type="month" id="funcAdmissao">
+                <div class="month-navs">
+                  <button type="button" class="month-nav" onclick="ajustarMes('funcAdmissao',+1)">▲</button>
+                  <button type="button" class="month-nav" onclick="ajustarMes('funcAdmissao',-1)">▼</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Observações gerais</label>
+            <textarea id="funcObs" rows="2" placeholder="Notas sobre o funcionário…"></textarea>
+          </div>
+          <!-- HISTORY -->
+          <div style="margin-top:4px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+              <span style="font-size:.8rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">Histórico de Lotações</span>
+              <button type="button" class="btn" style="padding:4px 10px;font-size:.8rem" onclick="adicionarLotacao()">+ Adicionar</button>
+            </div>
+            <div id="historicoFunc" style="display:flex;flex-direction:column;gap:8px"></div>
+          </div>
+          <div class="actions" style="margin-top:16px">
+            <button type="button" class="btn btn-danger" id="funcBtnDel" style="display:none" onclick="deletarFuncionario()">Excluir</button>
+            <button type="submit" class="btn">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL IMPORT CSV -->
+<div id="modalImportFunc" class="modal" style="z-index:1100">
+  <div class="modal-content" style="max-width:860px">
+    <div class="modal-header">
+      <h2>⬆ Importar Funcionários via CSV</h2>
+      <button class="close-modal" onclick="document.getElementById('modalImportFunc').style.display='none'">&times;</button>
+    </div>
+    <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:14px;line-height:1.7">
+      Aceita <strong>.csv</strong> separado por <strong>ponto-e-vírgula (;)</strong> ou vírgula. Cada linha pode ser um funcionário ou uma entrada de histórico (mesma matrícula, meses diferentes).
+      <br>
+      <button onclick="baixarTemplateCSV()" class="btn btn-secondary" style="padding:5px 12px;font-size:.8rem;margin-top:8px">⬇ Baixar Modelo CSV</button>
+    </div>
+    <div id="dropCSV" style="border:2px dashed var(--border);border-radius:8px;padding:30px;text-align:center;cursor:pointer;margin-bottom:14px;transition:.2s"
+         onclick="document.getElementById('csvFileInput').click()"
+         ondragover="event.preventDefault();this.style.borderColor='var(--accent)'"
+         ondragleave="this.style.borderColor='var(--border)'"
+         ondrop="handleCSVDrop(event)">
+      <div style="font-size:2rem;margin-bottom:8px">📄</div>
+      <div style="color:var(--text-muted);font-size:.85rem">Clique para selecionar ou arraste o arquivo CSV aqui</div>
+      <input type="file" id="csvFileInput" accept=".csv,.txt" style="display:none" onchange="handleCSVFile(this)">
+    </div>
+    <!-- Column mapping -->
+    <div id="csvMappingSection" style="display:none">
+      <div style="font-size:.8rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:8px">Mapeamento de colunas</div>
+      <div id="csvMappingGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px"></div>
+      <!-- Preview -->
+      <div style="font-size:.8rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:8px">Pré-visualização (primeiras 5 linhas)</div>
+      <div id="csvPreview" style="overflow-x:auto;margin-bottom:14px;font-size:.78rem;border:1px solid var(--border);border-radius:6px"></div>
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
+        <label class="checkbox-label">
+          <input type="checkbox" id="csvMerge" checked> Mesclar com cadastro existente (recomendado)
+        </label>
+        <span style="font-size:.75rem;color:var(--text-muted)">Desmarcado = substituir tudo</span>
+      </div>
+      <div id="csvImportInfo" style="font-size:.8rem;color:var(--text-muted);margin-bottom:10px"></div>
+      <div class="actions">
+        <button class="btn btn-secondary" onclick="document.getElementById('modalImportFunc').style.display='none'">Cancelar</button>
+        <button class="btn" onclick="confirmarImportCSV()">✅ Confirmar Importação</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDITOR FILE INPUT -->
+<input type="file" id="editorFileInput" accept="image/*,.pdf,.doc,.docx,.xlsx,.xls,.csv,.txt,.png,.jpg,.jpeg" style="display:none" onchange="inserirArquivoNoEditor(this)">
 
 <!-- LIGHTBOX -->
 <div id="lightbox" onclick="fecharLightbox(event)">
@@ -416,6 +657,7 @@
 
 <script>
   var deptMap = JSON.parse(localStorage.getItem('fechamento_dept_map')) || {};
+  var contaMap  = JSON.parse(localStorage.getItem('fechamento_conta_map'))  || {};
   var db = JSON.parse(localStorage.getItem('fechamento_pendencias_v3')) || [];
   var anotacoesDb = JSON.parse(localStorage.getItem('fechamento_anotacoes_gerais')) || {};
   var itemSelecionadoId = null;
@@ -423,6 +665,10 @@
   var sortCol = null, sortDir = 1;
   var calcAberta = false;
   var calcValor = '0';
+  var relTema = 'azul';
+  var temasCores = {azul:'#0284c7',verde:'#059669',laranja:'#d97706',roxo:'#7c3aed',cinza:'#475569'};
+  var temasBg    = {azul:'#f0f9ff',verde:'#f0fdf4',laranja:'#fffbeb',roxo:'#f5f3ff',cinza:'#f8fafc'};
+  var temasNomes = {azul:'Azul',verde:'Verde',laranja:'Laranja',roxo:'Roxo',cinza:'Cinza'};
 
   document.addEventListener('DOMContentLoaded', function() {
     var hoje = new Date().toISOString().slice(0,7);
@@ -508,9 +754,11 @@
   function atualizarDatalist() {
     var contas = Array.from(new Set(db.map(function(i){return i.conta}).filter(Boolean))).sort();
     var depts  = Array.from(new Set(db.map(function(i){return i.departamento}).filter(Boolean))).sort();
+    var contasAll=contas.slice();
+    contas.forEach(function(cn){var v=resolverConta(cn);if(v!==cn&&contasAll.indexOf(v)<0)contasAll.push(v);});
     ['listContas','relListContas'].forEach(function(id) {
       var el = document.getElementById(id);
-      if (el) el.innerHTML = contas.map(function(c){return '<option value="'+esc(c)+'">';}).join('');
+      if (el) el.innerHTML = contasAll.map(function(cn){return '<option value="'+esc(cn)+'">';}).join('');
     });
     ['listDepts','relListDepts'].forEach(function(id) {
       var el = document.getElementById(id);
@@ -520,6 +768,52 @@
 
   function visivelNoMes(item, mes) {
     return item.mesAbertura <= mes && (item.status !== 'Encerrado' || item.mesEncerramento >= mes);
+  }
+
+  function resolverConta(conta) {
+    if (!conta) return '';
+    var t=conta.trim(), tl=t.toLowerCase();
+    for (var k in contaMap) { if (k.toLowerCase()===tl) return contaMap[k]; }
+    return t;
+  }
+
+  function abrirModalVerbas() {
+    renderTabelaContaMap();
+    document.getElementById('modalVerbas').style.display='flex';
+  }
+  function fecharModalVerbas() {
+    document.getElementById('modalVerbas').style.display='none';
+  }
+  function renderTabelaContaMap() {
+    var tbody=document.getElementById('tabelaContaMap');
+    tbody.innerHTML='';
+    var keys=Object.keys(contaMap).sort();
+    if (!keys.length) { tbody.innerHTML='<tr><td colspan="3" style="color:var(--text-muted);text-align:center;padding:12px">Nenhum mapeamento cadastrado</td></tr>'; return; }
+    keys.forEach(function(k) {
+      var tr=document.createElement('tr');
+      tr.innerHTML='<td><code style="background:rgba(0,0,0,.3);padding:2px 6px;border-radius:4px;font-size:.85rem">'+esc(k)+'</code></td>'+
+        '<td><strong>'+esc(contaMap[k])+'</strong></td>'+
+        '<td><button class="btn btn-danger" style="padding:3px 8px;font-size:.75rem" onclick="removerContaMapeamento(\''+esc(k)+'\')">✕</button></td>';
+      tbody.appendChild(tr);
+    });
+  }
+  function adicionarContaMapeamento() {
+    var k=document.getElementById('contaMapKey').value.trim();
+    var v=document.getElementById('contaMapVal').value.trim();
+    if (!k||!v) { alert('Preencha a conta e a verba.'); return; }
+    contaMap[k]=v;
+    localStorage.setItem('fechamento_conta_map',JSON.stringify(contaMap));
+    document.getElementById('contaMapKey').value='';
+    document.getElementById('contaMapVal').value='';
+    renderTabelaContaMap();
+    atualizarDatalist();
+    renderApp();
+  }
+  function removerContaMapeamento(k) {
+    delete contaMap[k];
+    localStorage.setItem('fechamento_conta_map',JSON.stringify(contaMap));
+    renderTabelaContaMap();
+    renderApp();
   }
 
   function setSortCol(col) {
@@ -600,6 +894,7 @@
       var encerrouAntes = item.status === 'Encerrado' && item.mesEncerramento < mes;
       var abriuDepois   = item.mesAbertura > mes;
       if (filtroAtual === 'todas_historico') return true;
+      if (filtroAtual === 'pendencias_mes') return item.mesAbertura === mes;
       if (filtroAtual === 'herdadas')   return item.mesAbertura < mes && !encerrouAntes;
       if (filtroAtual === 'encerradas') return item.status === 'Encerrado' && item.mesEncerramento === mes;
       return !encerrouAntes && !abriuDepois;
@@ -648,7 +943,12 @@
       else if (item.status==='Em Análise') { bc='badge-info'; bt='🔵 Em Análise'; }
       else if (isFutura && item.mesAbertura===mes) { bc='badge-info'; bt='🔵 Prev: '+fmtMes(item.mesEncerramento); }
 
-      var conta = item.conta ? '<div class="cell-sub">🗂️ '+esc(item.conta)+'</div>' : '';
+      var conta = item.conta ? (function(){
+        var v=resolverConta(item.conta);
+        return '<div class="cell-sub">'+(v!==item.conta
+          ?'🏷️ '+esc(v)+'<span style="font-size:.65rem;color:var(--text-muted);margin-left:3px">('+esc(item.conta)+')</span>'
+          :'🗂️ '+esc(item.conta))+'</div>';
+      })() : '';
       var dept  = item.departamento ? '<span class="dept-tag">🏢 '+esc(resolverDept(item.departamento))+'</span>' : '';
       var vFmt  = fmtValor(item.valor);
 
@@ -754,10 +1054,33 @@
     document.getElementById('modalAnotacoes').style.display = 'none';
   }
 
+  function setTema(t) {
+    relTema = t;
+    atualizarSwatches();
+  }
+
+  function atualizarSwatches() {
+    document.querySelectorAll('.color-swatch').forEach(function(el) {
+      el.classList.toggle('active', el.dataset.tema === relTema);
+    });
+    var nome = document.getElementById('temaNome');
+    if (nome) { nome.textContent = temasNomes[relTema]||relTema; nome.style.color = temasCores[relTema]||'#94a3b8'; }
+  }
+
   function abrirModalRelatorio() {
     document.getElementById('relMes').value = document.getElementById('mesTrabalho').value;
     atualizarDatalist();
     document.getElementById('reportBody').classList.remove('visible');
+    var sb = document.getElementById('selectBar'); if (sb) sb.style.display = 'none';
+    var cfg = JSON.parse(localStorage.getItem('fechamento_rel_config') || '{}');
+    document.getElementById('relOrg').value        = cfg.org        || '';
+    document.getElementById('relDe').value         = cfg.de         || '';
+    document.getElementById('relSignatario').value = cfg.signatario || '';
+    document.getElementById('relCargo').value      = cfg.cargo      || '';
+    document.getElementById('relTitulo').value     = cfg.titulo     || '';
+    document.getElementById('relObs').value        = cfg.obs        || '';
+    relTema = cfg.tema || 'azul';
+    atualizarSwatches();
     document.getElementById('modalRelatorio').style.display = 'flex';
   }
 
@@ -770,7 +1093,8 @@
 
     return db.filter(function(item) {
       if (!visivelNoMes(item, mes)) return false;
-      if (stF==='Encerrado') { if (item.status!=='Encerrado'||item.mesEncerramento!==mes) return false; }
+      if (stF==='pendencias_mes') { if (item.mesAbertura !== mes) return false; }
+      else if (stF==='Encerrado') { if (item.status!=='Encerrado'||item.mesEncerramento!==mes) return false; }
       else if (stF==='ativas') { if (item.status==='Encerrado') return false; }
       else if (stF==='Pendente'||stF==='Em Análise') { if (item.status!==stF) return false; }
       if (contaF && (item.conta||'').toLowerCase().indexOf(contaF)<0) return false;
@@ -783,8 +1107,9 @@
   function agruparItens(itens, modo) {
     var grupos = {};
     itens.forEach(function(item) {
-      var k1 = modo==='conta' ? (item.conta||'(sem conta)') : (resolverDept(item.departamento)||'(sem departamento)');
-      var k2 = modo==='conta' ? (resolverDept(item.departamento)||'(sem departamento)') : (item.conta||'(sem conta)');
+      var _rc=item.conta?(resolverConta(item.conta)!==item.conta?resolverConta(item.conta)+' ('+item.conta+')':item.conta):'(sem conta)';
+    var k1 = modo==='conta' ? _rc : (resolverDept(item.departamento)||'(sem departamento)');
+      var k2 = modo==='conta' ? (resolverDept(item.departamento)||'(sem departamento)') : _rc;
       if (!grupos[k1]) grupos[k1] = {};
       if (!grupos[k1][k2]) grupos[k1][k2] = [];
       grupos[k1][k2].push(item);
@@ -918,6 +1243,7 @@
   }
 
 
+
   function exportarRelatorio() {
     var mes    = document.getElementById('relMes').value;
     var para   = document.getElementById('relPara').value.trim();
@@ -930,11 +1256,23 @@
     var optRes = document.getElementById('optResumo').checked;
     var optAr  = document.getElementById('optArea').checked;
     var optSig = document.getElementById('optAssinatura').checked;
+    var org        = document.getElementById('relOrg').value.trim();
+    var de         = document.getElementById('relDe').value.trim();
+    var signatario = document.getElementById('relSignatario').value.trim();
+    var cargo      = document.getElementById('relCargo').value.trim();
+    var titulo     = document.getElementById('relTitulo').value.trim() || 'Relatório de Pendências Contábeis';
+    var obs        = document.getElementById('relObs').value.trim();
+    var accent = {azul:'#38bdf8',verde:'#34d399',laranja:'#fbbf24',roxo:'#a78bfa',cinza:'#94a3b8'}[relTema] || '#38bdf8'; // clara p/ fundo escuro
+    var bgLight    = temasBg[relTema]   || '#f0f9ff';
 
-    // Only export checked items
+    // Save config for next time
+    localStorage.setItem('fechamento_rel_config', JSON.stringify({
+      org:org, de:de, signatario:signatario, cargo:cargo, titulo:titulo, obs:obs, tema:relTema
+    }));
+
+    // Only checked items
     var checkedIds = Array.from(document.querySelectorAll('.item-check:checked')).map(function(el){return el.dataset.id;});
-    if (!checkedIds.length) { alert('Nenhuma pendência selecionada. Marque os itens que deseja exportar.'); return; }
-
+    if (!checkedIds.length) { alert('Nenhuma pendência selecionada.'); return; }
     var todosItens = filtrarItensRelatorio();
     var itens = todosItens.filter(function(i){ return checkedIds.indexOf(i.id)>=0; });
 
@@ -946,11 +1284,10 @@
     var uD  =(new Set(itens.map(function(i){return resolverDept(i.departamento)||'—';}))).size;
     var totR=itens.reduce(function(s,i){return s+(Number(i.valor)||0);},0);
 
-    var stLabels={'':'Ativos no mês','ativas':'Não encerradas','Pendente':'Pendente','Em Análise':'Em Análise','Encerrado':'Encerradas no mês'};
+    var stLabels={'':'Ativos no mês','pendencias_mes':'Abertas no mês','ativas':'Não encerradas','Pendente':'Pendente','Em Análise':'Em Análise','Encerrado':'Encerradas no mês'};
     var stLabel=stLabels[stF]||stF;
     var agLbl=grupo==='conta'?'Conta → Departamento':'Departamento → Conta';
 
-    // Area breakdown
     var areaBk={};
     itens.forEach(function(i){
       if(!areaBk[i.area]) areaBk[i.area]={count:0,valor:0};
@@ -960,22 +1297,27 @@
     Object.keys(areaBk).sort().forEach(function(a){
       var d=areaBk[a];
       areaRows+='<tr><td>'+esc(a)+'</td><td style="text-align:center">'+d.count+'</td>'+
-        '<td style="text-align:right;color:#059669;font-weight:600">'+(d.valor>0?fmtValor(d.valor):'—')+'</td></tr>';
+        '<td style="text-align:right;color:'+accent+';font-weight:600">'+(d.valor>0?fmtValor(d.valor):'—')+'</td></tr>';
     });
 
     var grupos=agruparItens(itens,grupo);
     var icon1=grupo==='conta'?'Conta':'Departamento';
     var icon2=grupo==='conta'?'Departamento':'Conta';
     var gHtml='';
+    var selInfo='';
+    if (checkedIds.length < todosItens.length) {
+      selInfo='<div style="background:rgba(245,158,11,.1);border:1px solid #f59e0b;border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:.82rem;color:#fcd34d">'+
+              '⚠ <strong>Exportação parcial:</strong> Este documento contém <strong>'+checkedIds.length+'</strong> de <strong>'+todosItens.length+'</strong> pendências do filtro selecionado.</div>';
+    }
 
     if (!itens.length) {
-      gHtml='<p style="text-align:center;color:#94a3b8;padding:25px">Nenhuma pendência selecionada.</p>';
+      gHtml='<p style="text-align:center;color:#94a3b8;padding:25px">Nenhuma pendência.</p>';
     } else {
       Object.keys(grupos).sort().forEach(function(k1){
         var sub=grupos[k1];
         var totI=Object.keys(sub).reduce(function(s,k){return s+sub[k].length;},0);
         var totV=Object.keys(sub).reduce(function(s,k){return s+sub[k].reduce(function(ss,i){return ss+(Number(i.valor)||0);},0);},0);
-        var vBadge=totV>0?'<span class="cb2">'+fmtValor(totV)+'</span>':'';
+        var vBadge=totV>0?'<span style="background:rgba(56,189,248,.15);color:'+accent+';padding:2px 8px;border-radius:10px;font-size:.71rem;font-weight:700">'+fmtValor(totV)+'</span>':'';
         gHtml+='<div class="rg"><div class="rg-h">'+
                '<div><span class="rg-lbl">'+icon1+'</span> <strong>'+esc(k1)+'</strong></div>'+
                '<div style="display:flex;gap:8px;align-items:center">'+vBadge+
@@ -983,17 +1325,17 @@
         Object.keys(sub).sort().forEach(function(k2){
           var items=sub[k2];
           var subV=items.reduce(function(s,i){return s+(Number(i.valor)||0);},0);
-          var subVStr=subV>0?'<span class="sv">'+fmtValor(subV)+'</span>':'';
+          var subVStr=subV>0?'<span style="color:'+accent+';font-weight:600;font-size:.8rem">'+fmtValor(subV)+'</span>':'';
           gHtml+='<div class="dh"><div><span class="rg-lbl2">'+icon2+'</span> '+esc(k2)+'</div>'+
                  '<div style="display:flex;gap:10px;align-items:center">'+subVStr+
                  '<span style="color:#94a3b8;font-size:.75rem">'+items.length+' item'+(items.length!==1?'s':'')+'</span></div></div>'+
                  '<div class="di">';
           items.forEach(function(item,n){
-            var bs='background:#fef3c7;color:#92400e',bt=item.status;
-            if(item.status==='Encerrado')      {bs='background:#d1fae5;color:#065f46';bt='Encerrada';}
-            else if(item.mesAbertura<mes)       {bs='background:#fee2e2;color:#991b1b';bt='Herdada';}
-            else if(item.status==='Em Análise') {bs='background:#e0e7ff;color:#3730a3';}
-            var vStr=item.valor?'<div class="iv">'+fmtValor(item.valor)+'</div>':'';
+            var bs='background:rgba(245,158,11,.2);color:#fcd34d',bt=item.status;
+            if(item.status==='Encerrado')      {bs='background:rgba(16,185,129,.25);color:#6ee7b7';bt='Encerrada';}
+            else if(item.mesAbertura<mes)       {bs='background:rgba(239,68,68,.25);color:#fca5a5';bt='Herdada';}
+            else if(item.status==='Em Análise') {bs='background:rgba(99,102,241,.25);color:#a5b4fc';}
+            var vStr=item.valor?'<div style="font-size:.76rem;color:'+accent+';font-weight:600;margin-top:3px">'+fmtValor(item.valor)+'</div>':'';
             var anHtm=comAn&&item.anotacoes?'<div class="anot">'+item.anotacoes+'</div>':'';
             gHtml+='<div class="ri">'+
                    '<span class="rn">'+(n+1)+'.</span>'+
@@ -1008,64 +1350,86 @@
       });
     }
 
-    var selInfo = (checkedIds.length < todosItens.length)
-      ? '<br><span style="color:#d97706;font-weight:600">⚠ Exportação parcial: '+checkedIds.length+' de '+todosItens.length+' itens selecionados</span>'
-      : '';
-
     var w=window.open('','_blank');
     w.document.write('<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">'+
-'<title>Relatório '+fmtMes(mes)+'</title><style>'+
+'<title>'+esc(titulo)+' — '+fmtMes(mes)+'</title><style>'+
 '*{box-sizing:border-box;margin:0;padding:0}'+
-'body{font-family:"Segoe UI",Arial,sans-serif;font-size:13px;color:#1e293b;background:#fff;padding:30px 40px}'+
-'.hdr{padding-bottom:16px;margin-bottom:18px;border-bottom:3px solid #0284c7;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start}'+
-'.hdr h1{font-size:1.2rem;color:#0f172a;font-weight:700;margin-bottom:6px}'+
-'.hdr .meta{font-size:.8rem;color:#475569;line-height:1.9}'+
-'.hdr .gd{text-align:right;font-size:.75rem;color:#94a3b8;white-space:nowrap}'+
-'.para-box{background:#f0f9ff;border:1px solid #bae6fd;border-radius:6px;padding:10px 14px;margin-bottom:18px;font-size:.85rem}'+
-'.para-box .lbl{font-size:.72rem;color:#0284c7;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}'+
-'.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:0;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;margin-bottom:18px}'+
-'.sg{padding:11px 8px;text-align:center;border-right:1px solid #e2e8f0}'+
+'body{font-family:"Segoe UI",Arial,sans-serif;font-size:13px;color:#f8fafc;background:#0f172a;padding:30px 40px}'+
+/* letterhead */
+'.letterhead{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;margin-bottom:0;border-bottom:4px solid '+accent+'}'+
+'.org-name{font-size:1.1rem;font-weight:800;color:'+accent+';letter-spacing:-.3px}'+
+'.org-sub{font-size:.78rem;color:#94a3b8;margin-top:2px}'+
+'.doc-date{text-align:right;font-size:.74rem;color:#94a3b8}'+
+/* title band */
+'.title-band{background:rgba(56,189,248,.07);border-left:5px solid '+accent+';padding:12px 18px;margin:0 0 18px;border-radius:0 6px 6px 0}'+
+'.title-band h1{font-size:1.1rem;font-weight:700;color:#f8fafc;margin-bottom:4px}'+
+'.title-band .meta{font-size:.78rem;color:#94a3b8;line-height:1.8}'+
+/* para/de */
+'.routing{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}'+
+'.routing-box{border:1px solid #334155;border-radius:6px;padding:10px 14px;background:#1e293b}'+
+'.routing-box .lbl{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:'+accent+';margin-bottom:3px}'+
+'.routing-box .val{font-size:.9rem;font-weight:600;color:#f8fafc}'+
+/* summary */
+'.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(75px,1fr));gap:0;border:1px solid #334155;border-radius:8px;overflow:hidden;margin-bottom:18px;background:#1e293b}'+
+'.sg{padding:10px 8px;text-align:center;border-right:1px solid #334155}'+
 '.sg:last-child{border-right:none}'+
-'.sg .n{font-size:1.5rem;font-weight:700;color:#334155}'+
-'.sg .l{font-size:.63rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.3px;margin-top:2px}'+
-'.sec-title{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #e2e8f0}'+
+'.sg .n{font-size:1.45rem;font-weight:700;color:#f8fafc}'+
+'.sg .l{font-size:.62rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.3px;margin-top:2px}'+
+/* area table */
+'.sec-title{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#cbd5e1;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #334155}'+
 '.area-table{width:100%;border-collapse:collapse;margin-bottom:18px;font-size:.82rem}'+
-'.area-table th{background:#f8fafc;padding:6px 10px;text-align:left;font-weight:600;color:#475569;border:1px solid #e2e8f0}'+
-'.area-table td{padding:6px 10px;border:1px solid #f1f5f9}'+
-'.area-table tr:nth-child(even) td{background:#fafafa}'+
-'.rg{margin-bottom:12px;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;page-break-inside:avoid}'+
-'.rg-h{background:#f0f9ff;padding:10px 15px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;border-bottom:1px solid #e2e8f0}'+
-'.rg-lbl{font-size:.67rem;font-weight:700;text-transform:uppercase;color:#0284c7;background:#dbeafe;padding:1px 5px;border-radius:3px;margin-right:4px}'+
-'.rg-lbl2{font-size:.67rem;font-weight:700;text-transform:uppercase;color:#64748b;background:#f1f5f9;padding:1px 5px;border-radius:3px;margin-right:4px}'+
-'.rg-h strong{color:#0284c7;font-size:.92rem}'+
-'.cb{background:#0284c7;color:white;padding:2px 8px;border-radius:10px;font-size:.71rem;font-weight:700}'+
-'.cb2{background:#d1fae5;color:#065f46;padding:2px 8px;border-radius:10px;font-size:.71rem;font-weight:700}'+
-'.sv{color:#059669;font-weight:600;font-size:.8rem}'+
-'.dh{background:#f8fafc;padding:7px 15px;font-size:.77rem;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:.4px;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center}'+
+'.area-table th{background:#1e293b;padding:6px 10px;text-align:left;font-weight:600;color:'+accent+';border:1px solid #334155}'+
+'.area-table td{padding:6px 10px;border:1px solid #334155;color:#f8fafc}'+
+'.area-table tr:nth-child(even) td{background:rgba(255,255,255,.04)}'+
+/* groups */
+'.rg{margin-bottom:12px;border:1px solid #334155;border-radius:8px;overflow:hidden;page-break-inside:avoid;background:#1e293b}'+
+'.rg-h{background:rgba(56,189,248,.06);padding:10px 15px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;border-bottom:1px solid #334155}'+
+'.rg-lbl{font-size:.67rem;font-weight:700;text-transform:uppercase;color:'+accent+';background:rgba(56,189,248,.12);padding:1px 6px;border-radius:3px;border:1px solid '+accent+';margin-right:4px}'+
+'.rg-lbl2{font-size:.67rem;font-weight:700;text-transform:uppercase;color:#94a3b8;background:rgba(255,255,255,.06);padding:1px 6px;border-radius:3px;margin-right:4px}'+
+'.rg-h strong{color:'+accent+';font-size:.92rem}'+
+'.cb{background:'+accent+';color:#000;padding:2px 8px;border-radius:10px;font-size:.71rem;font-weight:700}'+
+'.dh{background:rgba(255,255,255,.03);padding:7px 15px;font-size:.77rem;color:#cbd5e1;font-weight:700;text-transform:uppercase;letter-spacing:.4px;border-top:1px solid #334155;display:flex;justify-content:space-between;align-items:center}'+
 '.di{padding:0 15px}'+
-'.ri{display:flex;align-items:flex-start;gap:8px;padding:9px 0;border-bottom:1px solid #f8fafc}'+
+'.ri{display:flex;align-items:flex-start;gap:8px;padding:9px 0;border-bottom:1px solid rgba(51,65,85,.7)}'+
 '.ri:last-child{border-bottom:none}'+
 '.rn{font-size:.72rem;color:#94a3b8;min-width:18px;text-align:right;padding-top:3px;flex-shrink:0}'+
 '.rc{flex:1;min-width:0}'+
-'.rc strong{font-size:.88rem;color:#1e293b}'+
+'.rc strong{font-size:.88rem;color:#f8fafc}'+
 '.mt{font-size:.74rem;color:#94a3b8;margin-top:2px}'+
 '.bd{padding:3px 7px;border-radius:4px;font-size:.71rem;font-weight:700;white-space:nowrap;flex-shrink:0}'+
-'.iv{font-size:.76rem;color:#059669;font-weight:600;margin-top:3px}'+
-'.anot{font-size:.8rem;line-height:1.6;color:#475569;margin-top:10px;padding:10px 12px;background:#f8fafc;border-radius:6px;border-left:3px solid #cbd5e1}'+
-'.anot img{max-width:100%;height:auto;border-radius:4px;border:1px solid #e2e8f0;margin:6px 0;display:block}'+
-'.footer{margin-top:28px;padding-top:14px;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:15px}'+
-'.sig-area{font-size:.78rem;color:#475569}'+
-'.sig-line{border-bottom:1px solid #334155;width:240px;margin-top:32px;margin-bottom:4px}'+
-'.brand{font-size:.73rem;color:#94a3b8;text-align:right}'+
-'.pb{display:inline-block;margin-top:18px;background:#0284c7;color:white;border:none;padding:10px 22px;border-radius:6px;cursor:pointer;font-size:.88rem;font-weight:600}'+
-'@media print{.pb{display:none}body{padding:15px 20px}}'+
+'.anot{font-size:.8rem;line-height:1.6;color:#94a3b8;margin-top:10px;padding:10px 12px;background:rgba(0,0,0,.3);border-radius:6px;border-left:3px solid #334155}'+
+'.anot img{max-width:100%;height:auto;border-radius:4px;border:1px solid #334155;margin:6px 0;display:block}'+
+/* obs */
+'.obs-box{background:rgba(56,189,248,.06);border:1px solid #334155;border-left:4px solid '+accent+';border-radius:6px;padding:12px 16px;margin:20px 0;font-size:.83rem;color:#f8fafc;line-height:1.6}'+
+'.obs-box .obs-lbl{font-size:.7rem;font-weight:700;text-transform:uppercase;color:'+accent+';letter-spacing:.5px;margin-bottom:6px}'+
+/* footer */
+'.footer{margin-top:28px;padding-top:14px;border-top:1px solid #334155;display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:end}'+
+'.sig-area .sig-line{border-bottom:1px solid #94a3b8;margin-top:30px;margin-bottom:5px}'+
+'.sig-area .sig-meta{font-size:.72rem;color:#94a3b8}'+
+'.brand{text-align:right;font-size:.73rem;color:#94a3b8;line-height:1.6}'+
+'.pb{display:inline-block;margin-top:18px;background:'+accent+';color:#000;border:none;padding:10px 24px;border-radius:6px;cursor:pointer;font-size:.88rem;font-weight:600}'+
+'@media print{.pb{display:none}body{padding:15px 20px;background:#0f172a;-webkit-print-color-adjust:exact;print-color-adjust:exact}}'+
 '</style></head><body>'+
-'<div class="hdr"><div><h1>📋 Relatório de Pendências Contábeis</h1>'+
-'<div class="meta">Competência: <strong>'+fmtMes(mes)+'</strong> &nbsp;|&nbsp; Conta: <strong>'+esc(contaF)+'</strong> &nbsp;|&nbsp; Área: <strong>'+esc(areaF)+'</strong><br>'+
-'Status: <strong>'+stLabel+'</strong> &nbsp;|&nbsp; Agrupamento: <strong>'+agLbl+'</strong>'+selInfo+
-(comAn?'<br>✅ Anotações incluídas':'')+'</div></div>'+
-'<div class="gd">Gerado em:<br><strong>'+new Date().toLocaleString('pt-BR')+'</strong></div></div>'+
-(para?'<div class="para-box"><div class="lbl">Para / Destinatário</div><strong>'+esc(para)+'</strong></div>':'')+
+/* letterhead */
+'<div class="letterhead">'+
+'<div><div class="org-name">'+(org||'Sistema de Pendências Contábeis')+'</div>'+
+(de?'<div class="org-sub">'+esc(de)+'</div>':'')+
+'</div>'+
+'<div class="doc-date">Gerado em:<br><strong>'+new Date().toLocaleString('pt-BR')+'</strong></div></div>'+
+/* title band */
+'<div class="title-band">'+
+'<h1>'+esc(titulo)+'</h1>'+
+'<div class="meta">'+
+'Competência: <strong>'+fmtMes(mes)+'</strong> &nbsp;|&nbsp; Conta: <strong>'+esc(contaF)+'</strong> &nbsp;|&nbsp; Departamento: <strong>'+esc(deptF)+'</strong><br>'+
+'Área: <strong>'+esc(areaF)+'</strong> &nbsp;|&nbsp; Status: <strong>'+stLabel+'</strong> &nbsp;|&nbsp; Agrupamento: <strong>'+agLbl+'</strong>'+
+(comAn?' &nbsp;|&nbsp; ✅ Anotações incluídas':'')+'</div></div>'+
+selInfo+
+/* routing (para / de) */
+((para||de)?'<div class="routing">'+
+(para?'<div class="routing-box"><div class="lbl">Para / Destinatário</div><div class="val">'+esc(para)+'</div></div>':'<div></div>')+
+(de?'<div class="routing-box"><div class="lbl">De / Remetente</div><div class="val">'+esc(de)+'</div></div>':'<div></div>')+
+'</div>':'')+
+/* summary cards */
 (optRes?'<div class="summary-grid">'+
 '<div class="sg"><div class="n">'+itens.length+'</div><div class="l">Selecionados</div></div>'+
 '<div class="sg"><div class="n" style="color:#dc2626">'+pend+'</div><div class="l">Pendentes</div></div>'+
@@ -1074,16 +1438,28 @@
 '<div class="sg"><div class="n" style="color:#dc2626">'+herd+'</div><div class="l">Herdadas</div></div>'+
 '<div class="sg"><div class="n">'+uC+'</div><div class="l">Contas</div></div>'+
 '<div class="sg"><div class="n">'+uD+'</div><div class="l">Deptos</div></div>'+
-(totR>0?'<div class="sg"><div class="n" style="font-size:.95rem;color:#059669">'+fmtValor(totR)+'</div><div class="l">Valor Total</div></div>':'')+
+(totR>0?'<div class="sg"><div class="n" style="font-size:.9rem;color:'+accent+'">'+fmtValor(totR)+'</div><div class="l">Valor Total</div></div>':'')+
 '</div>':'')+
+/* area table */
 (optAr&&areaRows?'<div class="sec-title">Distribuição por Área</div>'+
 '<table class="area-table"><thead><tr><th>Área</th><th style="text-align:center">Qtd</th><th style="text-align:right">Valor</th></tr></thead>'+
 '<tbody>'+areaRows+'</tbody></table>':'')+
+/* items */
 '<div class="sec-title" style="margin-bottom:12px">Pendências</div>'+
 gHtml+
+/* observations */
+(obs?'<div class="obs-box"><div class="obs-lbl">Observações</div>'+esc(obs).replace(/\n/g,'<br>')+'</div>':'')+
+/* footer */
 '<div class="footer">'+
-(optSig?'<div class="sig-area">Responsável Contabilidade<div class="sig-line"></div><span style="font-size:.71rem;color:#94a3b8">Assinatura &nbsp;&nbsp;&nbsp;&nbsp; Data: ___/___/______</span></div>':'<div></div>')+
-'<div class="brand">Sistema de Pendências Contábeis<br>'+new Date().toLocaleString('pt-BR')+'</div></div>'+
+(optSig?'<div class="sig-area">'+
+'<div style="font-size:.8rem;color:#1e293b;font-weight:600;margin-bottom:4px">'+(signatario||'Responsável Contabilidade')+'</div>'+
+(cargo?'<div style="font-size:.74rem;color:#64748b;margin-bottom:2px">'+esc(cargo)+'</div>':'')+
+'<div class="sig-line"></div>'+
+'<div class="sig-meta">Assinatura &nbsp;&nbsp;&nbsp;&nbsp; Data: ___/___/______</div></div>':
+'<div></div>')+
+'<div class="brand">'+(org||'Sistema de Pendências Contábeis')+'<br>'+
+(de?esc(de)+'<br>':'')+
+new Date().toLocaleString('pt-BR')+'</div></div>'+
 '<button class="pb" onclick="window.print()">🖨️ Imprimir / Salvar como PDF</button>'+
 '</body></html>');
     w.document.close();
@@ -1157,7 +1533,7 @@ gHtml+
 
   function exportarJSON() {
     var a=document.createElement('a');
-    a.href=URL.createObjectURL(new Blob([JSON.stringify({pendencias:db,anotacoesGerais:anotacoesDb,deptMap:deptMap},null,2)],{type:'application/json'}));
+    a.href=URL.createObjectURL(new Blob([JSON.stringify({pendencias:db,anotacoesGerais:anotacoesDb,deptMap:deptMap,contaMap:contaMap,funcionarios:funcionariosDb},null,2)],{type:'application/json'}));
     a.download='backup_contabil_'+new Date().toISOString().slice(0,10)+'.json';
     a.click();
   }
@@ -1173,14 +1549,531 @@ gHtml+
           db=dados.pendencias||[];
           anotacoesDb=dados.anotacoesGerais||{};
           deptMap=dados.deptMap||{};
+          contaMap=dados.contaMap||{};
+          funcionariosDb=dados.funcionarios||[];
           localStorage.setItem('fechamento_anotacoes_gerais',JSON.stringify(anotacoesDb));
           localStorage.setItem('fechamento_dept_map',JSON.stringify(deptMap));
+          localStorage.setItem('fechamento_conta_map',JSON.stringify(contaMap));
+          salvarFuncionariosDb();
         }
         renderApp(); alert('Backup importado com sucesso!');
       }catch(ex){alert('Erro ao importar o arquivo JSON.');}
     };
     reader.readAsText(file);
   }
+
+
+  // ═══════════════════════════════════════════════════════
+  // MÓDULO FUNCIONÁRIOS
+  // ═══════════════════════════════════════════════════════
+  var funcionariosDb = JSON.parse(localStorage.getItem('fechamento_funcionarios')) || [];
+  var funcSelecionadoId = null;
+  var csvParsed = null; // { headers, rows }
+  var camposCSV = ['matricula','nome','status','email','admissao','departamento','cargo','centroCusto','mes','obs'];
+  var labelsCSV = {matricula:'Matrícula*',nome:'Nome*',status:'Status',email:'E-mail',admissao:'Mês Admissão',departamento:'Departamento',cargo:'Cargo',centroCusto:'Centro de Custo',mes:'Mês Vigência',obs:'Observação'};
+
+  function salvarFuncionariosDb() {
+    localStorage.setItem('fechamento_funcionarios', JSON.stringify(funcionariosDb));
+  }
+
+  function getLotacaoNoMes(func, mes) {
+    var lots = (func.lotacoes || []).filter(function(l){ return l.mes <= mes; });
+    if (!lots.length) return { departamento: func.departamento || '', cargo: func.cargo || '', centroCusto: '', mes: '' };
+    lots.sort(function(a,b){ return a.mes < b.mes ? 1 : -1; });
+    return lots[0];
+  }
+
+  function abrirModalFunc() {
+    var mes = document.getElementById('mesTrabalho').value;
+    document.getElementById('funcMesVer').value = mes;
+    renderFuncionarios();
+    novoFuncionario();
+    document.getElementById('modalFunc').style.display = 'flex';
+  }
+
+  function fecharModalFunc() {
+    document.getElementById('modalFunc').style.display = 'none';
+  }
+
+  function renderFuncionarios() {
+    var busca  = (document.getElementById('buscaFunc').value || '').toLowerCase();
+    var mesVer = document.getElementById('funcMesVer').value || new Date().toISOString().slice(0,7);
+    var stFil  = document.getElementById('filtroStatusFunc').value;
+    var tbody  = document.getElementById('listaFunc');
+    tbody.innerHTML = '';
+
+    var lista = funcionariosDb.filter(function(f) {
+      if (stFil && f.status !== stFil) return false;
+      if (busca && (f.nome||'').toLowerCase().indexOf(busca)<0 && (f.matricula||'').toLowerCase().indexOf(busca)<0) return false;
+      return true;
+    }).sort(function(a,b){ return (a.nome||'').localeCompare(b.nome||''); });
+
+    var totalAtivos = funcionariosDb.filter(function(f){return f.status==='Ativo';}).length;
+    var totalInat   = funcionariosDb.filter(function(f){return f.status==='Inativo';}).length;
+    var totalAfas   = funcionariosDb.filter(function(f){return f.status==='Afastado';}).length;
+    document.getElementById('funcStatBadge').innerHTML =
+      '<span style="color:var(--success)">'+totalAtivos+' ativos</span> &nbsp;|&nbsp; '+
+      '<span style="color:var(--text-muted)">'+totalInat+' inativos</span> &nbsp;|&nbsp; '+
+      '<span style="color:var(--warning)">'+totalAfas+' afastados</span> &nbsp;|&nbsp; '+
+      '<strong>'+lista.length+' exibidos</strong>';
+
+    if (!lista.length) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:20px">'+
+        (funcionariosDb.length===0?'Nenhum funcionário cadastrado. Importe um CSV ou adicione manualmente.':'Nenhum funcionário encontrado.')+'</td></tr>';
+      return;
+    }
+
+    lista.forEach(function(f) {
+      var lot = getLotacaoNoMes(f, mesVer);
+      var dept = resolverDept(lot.departamento) || '—';
+      var stColors = {Ativo:'badge-success',Inativo:'badge-danger',Afastado:'badge-warning'};
+      var tr = document.createElement('tr');
+      if (f.id === funcSelecionadoId) tr.style.background = 'rgba(56,189,248,.1)';
+      tr.style.cursor = 'pointer';
+      tr.innerHTML =
+        '<td style="padding:10px 12px;font-size:.8rem;color:var(--text-muted);border-bottom:1px solid var(--border)">'+esc(f.matricula||'')+'</td>'+
+        '<td style="padding:10px 12px;border-bottom:1px solid var(--border)"><strong style="font-size:.87rem">'+esc(f.nome||'')+'</strong></td>'+
+        '<td style="padding:10px 12px;font-size:.82rem;border-bottom:1px solid var(--border)">'+esc(dept)+'</td>'+
+        '<td style="padding:10px 12px;font-size:.82rem;border-bottom:1px solid var(--border)">'+esc(lot.cargo||'')+'</td>'+
+        '<td style="padding:10px 12px;text-align:center;border-bottom:1px solid var(--border)">'+
+        '<span class="badge '+(stColors[f.status]||'badge-info')+'" style="font-size:.68rem">'+esc(f.status||'')+'</span></td>';
+      tr.onclick = (function(id){ return function(){ carregarFuncionario(id); }; })(f.id);
+      tbody.appendChild(tr);
+    });
+  }
+
+  function carregarFuncionario(id) {
+    var f = funcionariosDb.find(function(x){ return x.id===id; });
+    if (!f) return;
+    funcSelecionadoId = id;
+    document.getElementById('funcId').value        = id;
+    document.getElementById('funcMatricula').value = f.matricula || '';
+    document.getElementById('funcNome').value      = f.nome      || '';
+    document.getElementById('funcStatus').value    = f.status    || 'Ativo';
+    document.getElementById('funcEmail').value     = f.email     || '';
+    document.getElementById('funcAdmissao').value  = f.admissao  || '';
+    document.getElementById('funcObs').value       = f.obs       || '';
+    document.getElementById('funcFormTitulo').innerText = 'Editando: ' + (f.nome||'');
+    document.getElementById('funcBtnDel').style.display = 'block';
+    renderHistoricoFunc(f.lotacoes || []);
+    renderFuncionarios();
+  }
+
+  function novoFuncionario() {
+    funcSelecionadoId = null;
+    document.getElementById('funcForm').reset();
+    document.getElementById('funcId').value = '';
+    document.getElementById('funcStatus').value = 'Ativo';
+    document.getElementById('funcFormTitulo').innerText = 'Novo Funcionário';
+    document.getElementById('funcBtnDel').style.display = 'none';
+    renderHistoricoFunc([]);
+    renderFuncionarios();
+  }
+
+  function salvarFuncionario(e) {
+    e.preventDefault();
+    var id = document.getElementById('funcId').value || Date.now().toString();
+    // Collect lotações from DOM
+    var lots = [];
+    document.querySelectorAll('.lotacao-row').forEach(function(row) {
+      lots.push({
+        mes:         row.querySelector('.lot-mes').value,
+        departamento:row.querySelector('.lot-dept').value.trim(),
+        cargo:       row.querySelector('.lot-cargo').value.trim(),
+        centroCusto: row.querySelector('.lot-cc').value.trim(),
+        obs:         row.querySelector('.lot-obs').value.trim()
+      });
+    });
+    lots.sort(function(a,b){ return a.mes < b.mes ? 1 : -1; }); // newest first
+
+    var f = {
+      id:          id,
+      matricula:   document.getElementById('funcMatricula').value.trim(),
+      nome:        document.getElementById('funcNome').value.trim(),
+      status:      document.getElementById('funcStatus').value,
+      email:       document.getElementById('funcEmail').value.trim(),
+      admissao:    document.getElementById('funcAdmissao').value,
+      obs:         document.getElementById('funcObs').value.trim(),
+      lotacoes:    lots,
+      atualizadoEm: new Date().toISOString()
+    };
+    var idx = funcionariosDb.findIndex(function(x){ return x.id===id; });
+    if (idx>-1) funcionariosDb[idx]=f; else funcionariosDb.push(f);
+    salvarFuncionariosDb();
+    funcSelecionadoId = id;
+    renderFuncionarios();
+    document.getElementById('funcBtnDel').style.display = 'block';
+    document.getElementById('funcFormTitulo').innerText = 'Editando: ' + f.nome;
+  }
+
+  function deletarFuncionario() {
+    if (!confirm('Excluir este funcionário?')) return;
+    funcionariosDb = funcionariosDb.filter(function(x){ return x.id !== funcSelecionadoId; });
+    salvarFuncionariosDb();
+    novoFuncionario();
+  }
+
+  function renderHistoricoFunc(lots) {
+    var container = document.getElementById('historicoFunc');
+    container.innerHTML = '';
+    if (!lots.length) {
+      container.innerHTML = '<div style="font-size:.8rem;color:var(--text-muted);text-align:center;padding:10px">Nenhuma lotação cadastrada</div>';
+      return;
+    }
+    // Sort newest first for display
+    var sorted = lots.slice().sort(function(a,b){ return a.mes < b.mes ? 1 : -1; });
+    sorted.forEach(function(lot, i) {
+      var div = document.createElement('div');
+      div.className = 'lotacao-row';
+      div.style.cssText = 'background:rgba(0,0,0,.2);border-radius:8px;padding:12px;border:1px solid var(--border);position:relative';
+      div.innerHTML =
+        '<button type="button" onclick="this.closest(\'.lotacao-row\').remove()" '+
+        'style="position:absolute;top:6px;right:8px;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1rem;line-height:1">✕</button>'+
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">'+
+        '<div class="form-group" style="margin:0"><label>Mês Vigência</label>'+
+        '<div class="month-wrap"><input type="month" class="lot-mes" value="'+esc(lot.mes||'')+'">'+
+        '<div class="month-navs"><button type="button" class="month-nav" onclick="var m=this.closest(\'.month-wrap\').querySelector(\'input\');ajustarInputMes(m,+1)">▲</button>'+
+        '<button type="button" class="month-nav" onclick="var m=this.closest(\'.month-wrap\').querySelector(\'input\');ajustarInputMes(m,-1)">▼</button></div></div></div>'+
+        '<div class="form-group" style="margin:0"><label>Centro de Custo</label><input type="text" class="lot-cc" value="'+esc(lot.centroCusto||'')+'" placeholder="Ex: ADM"></div>'+
+        '</div>'+
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">'+
+        '<div class="form-group" style="margin:0"><label>Departamento</label>'+
+        '<input type="text" class="lot-dept" value="'+esc(lot.departamento||'')+'" placeholder="Ex: Sede" list="listDepts"></div>'+
+        '<div class="form-group" style="margin:0"><label>Cargo</label>'+
+        '<input type="text" class="lot-cargo" value="'+esc(lot.cargo||'')+'" placeholder="Ex: Assistente"></div>'+
+        '</div>'+
+        '<div class="form-group" style="margin:0"><label>Observação</label>'+
+        '<input type="text" class="lot-obs" value="'+esc(lot.obs||'')+'" placeholder="Ex: Transferência, promoção…"></div>';
+      container.appendChild(div);
+    });
+  }
+
+  function adicionarLotacao() {
+    var today = new Date().toISOString().slice(0,7);
+    var tempLots = [];
+    document.querySelectorAll('.lotacao-row').forEach(function(row) {
+      tempLots.push({
+        mes: row.querySelector('.lot-mes').value,
+        departamento: row.querySelector('.lot-dept').value,
+        cargo: row.querySelector('.lot-cargo').value,
+        centroCusto: row.querySelector('.lot-cc').value,
+        obs: row.querySelector('.lot-obs').value
+      });
+    });
+    tempLots.unshift({ mes: today, departamento:'', cargo:'', centroCusto:'', obs:'' });
+    renderHistoricoFunc(tempLots);
+  }
+
+  function ajustarInputMes(input, delta) {
+    if (!input.value) input.value = new Date().toISOString().slice(0,7);
+    var p = input.value.split('-');
+    var d = new Date(parseInt(p[0]), parseInt(p[1])-1+delta, 1);
+    input.value = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  }
+
+  // ── IMPORT CSV ────────────────────────────────────────────────────────────
+  function abrirImportFunc() {
+    document.getElementById('csvMappingSection').style.display = 'none';
+    document.getElementById('csvFileInput').value = '';
+    csvParsed = null;
+    document.getElementById('modalImportFunc').style.display = 'flex';
+  }
+
+  function handleCSVDrop(e) {
+    e.preventDefault();
+    document.getElementById('dropCSV').style.borderColor = 'var(--border)';
+    var file = e.dataTransfer.files[0];
+    if (file) processCSVFile(file);
+  }
+
+  function handleCSVFile(input) {
+    if (input.files[0]) processCSVFile(input.files[0]);
+  }
+
+  function processCSVFile(file) {
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      var text = ev.target.result;
+      // Detect encoding issues (try with BOM removal)
+      if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+      csvParsed = parseCSV(text);
+      renderCSVMapping();
+    };
+    reader.readAsText(file, 'UTF-8');
+  }
+
+  function parseCSV(text) {
+    var lines = text.trim().split(/\r?\n/);
+    // Detect separator
+    var sep = ';';
+    var firstLine = lines[0];
+    if (firstLine.indexOf('\t') > -1) sep = '\t';
+    else if (firstLine.split(',').length > firstLine.split(';').length) sep = ',';
+
+    function splitLine(line) {
+      var result = [], cur = '', inQ = false;
+      for (var i=0; i<line.length; i++) {
+        var ch = line[i];
+        if (ch==='"') { inQ=!inQ; continue; }
+        if (ch===sep && !inQ) { result.push(cur.trim()); cur=''; continue; }
+        cur += ch;
+      }
+      result.push(cur.trim());
+      return result;
+    }
+
+    var headers = splitLine(lines[0]);
+    var rows = [];
+    for (var i=1; i<lines.length; i++) {
+      if (!lines[i].trim()) continue;
+      var vals = splitLine(lines[i]);
+      var row = {};
+      headers.forEach(function(h,j){ row[j] = vals[j] || ''; row[h] = vals[j] || ''; });
+      rows.push(row);
+    }
+    return { headers: headers, rows: rows };
+  }
+
+  function renderCSVMapping() {
+    if (!csvParsed) return;
+    var h = csvParsed.headers;
+    var noneOpt = '<option value="">— ignorar —</option>';
+    var opts = noneOpt + h.map(function(col,i){ return '<option value="'+i+'">'+esc(col)+'</option>'; }).join('');
+
+    // Auto-detect columns by common names
+    function autoDetect(keywords) {
+      for (var i=0; i<h.length; i++) {
+        var hl = h[i].toLowerCase().replace(/[^a-zà-ú0-9]/g,'');
+        for (var k=0; k<keywords.length; k++) {
+          if (hl.indexOf(keywords[k].toLowerCase())>=0) return i;
+        }
+      }
+      return '';
+    }
+
+    var defaults = {
+      matricula: autoDetect(['matric','matricula','mat','codigo','cod','id']),
+      nome:      autoDetect(['nome','name','funcionario']),
+      status:    autoDetect(['status','situacao','situação']),
+      email:     autoDetect(['email','e-mail','mail']),
+      admissao:  autoDetect(['admissao','admissão','admis','entrada']),
+      departamento: autoDetect(['departamento','depto','dept','setor']),
+      cargo:     autoDetect(['cargo','funcao','função','posicao']),
+      centroCusto: autoDetect(['centro','cc','cost']),
+      mes:       autoDetect(['mes','mês','vigencia','vigência','period','competencia']),
+      obs:       autoDetect(['obs','observ','nota','note','coment'])
+    };
+
+    var grid = document.getElementById('csvMappingGrid');
+    grid.innerHTML = '';
+    camposCSV.forEach(function(campo) {
+      var lbl = labelsCSV[campo];
+      var sel = '<select id="map_'+campo+'" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:7px;border-radius:5px;font-size:.82rem">'+opts+'</select>';
+      var div = document.createElement('div');
+      div.innerHTML = '<div style="margin-bottom:8px"><label style="font-size:.75rem;color:var(--text-muted);display:block;margin-bottom:4px">'+lbl+'</label>'+sel+'</div>';
+      grid.appendChild(div);
+      var selEl = document.getElementById('map_'+campo);
+      if (defaults[campo] !== '') selEl.value = String(defaults[campo]);
+    });
+
+    renderCSVPreview();
+    var info = document.getElementById('csvImportInfo');
+    info.textContent = csvParsed.rows.length + ' linha(s) detectada(s). Matrícula e Nome são obrigatórios.';
+    document.getElementById('csvMappingSection').style.display = 'block';
+  }
+
+  function getMapping() {
+    var m = {};
+    camposCSV.forEach(function(c){ var el=document.getElementById('map_'+c); m[c]= el&&el.value!==''?parseInt(el.value):null; });
+    return m;
+  }
+
+  function renderCSVPreview() {
+    var m = getMapping();
+    var preview = document.getElementById('csvPreview');
+    var rows = csvParsed.rows.slice(0,5);
+    var shown = camposCSV.filter(function(c){ return m[c]!==null; });
+    var html = '<table style="width:100%;border-collapse:collapse">';
+    html += '<thead><tr>'+shown.map(function(c){ return '<th style="padding:6px 8px;background:rgba(0,0,0,.3);font-size:.72rem;color:var(--text-muted);text-align:left;white-space:nowrap">'+labelsCSV[c]+'</th>'; }).join('')+'</tr></thead><tbody>';
+    rows.forEach(function(row) {
+      html += '<tr>'+shown.map(function(c){ return '<td style="padding:5px 8px;border-bottom:1px solid var(--border);font-size:.78rem;white-space:nowrap;max-width:150px;overflow:hidden;text-overflow:ellipsis">'+esc(m[c]!==null?row[m[c]]||'':'')+'</td>'; }).join('')+'</tr>';
+    });
+    html += '</tbody></table>';
+    preview.innerHTML = html;
+  }
+
+  function confirmarImportCSV() {
+    if (!csvParsed) return;
+    var m = getMapping();
+    if (m.matricula===null || m.nome===null) { alert('Mapeie pelo menos Matrícula e Nome.'); return; }
+    var merge = document.getElementById('csvMerge').checked;
+    var g = {}; // group by matricula
+    csvParsed.rows.forEach(function(row) {
+      var mat = (row[m.matricula]||'').trim();
+      var nom = (row[m.nome]||'').trim();
+      if (!mat || !nom) return;
+      if (!g[mat]) g[mat] = { matricula:mat, nome:nom,
+        status:  m.status!==null  ? (row[m.status]||'Ativo')  : 'Ativo',
+        email:   m.email!==null   ? (row[m.email]||'')         : '',
+        admissao:m.admissao!==null? (row[m.admissao]||'')      : '',
+        obs:     '', lotacoes:[] };
+      // Build lotação entry
+      var lot = {
+        mes:          m.mes!==null    ? (row[m.mes]||'')          : '',
+        departamento: m.departamento!==null ? (row[m.departamento]||'') : '',
+        cargo:        m.cargo!==null  ? (row[m.cargo]||'')        : '',
+        centroCusto:  m.centroCusto!==null ? (row[m.centroCusto]||'') : '',
+        obs:          m.obs!==null    ? (row[m.obs]||'')          : ''
+      };
+      if (lot.departamento || lot.cargo || lot.mes) {
+        // Avoid duplicate mes
+        var exists = g[mat].lotacoes.some(function(l){ return l.mes===lot.mes && l.departamento===lot.departamento; });
+        if (!exists) g[mat].lotacoes.push(lot);
+      }
+    });
+
+    var importados=0, atualizados=0;
+    if (!merge) funcionariosDb = [];
+
+    Object.values(g).forEach(function(data) {
+      var existing = funcionariosDb.find(function(f){ return f.matricula===data.matricula; });
+      if (existing) {
+        // Merge: update basic fields, add new lotações
+        existing.nome    = data.nome    || existing.nome;
+        existing.status  = data.status  || existing.status;
+        existing.email   = data.email   || existing.email;
+        existing.admissao= data.admissao|| existing.admissao;
+        data.lotacoes.forEach(function(nl) {
+          var dup = (existing.lotacoes||[]).some(function(l){ return l.mes===nl.mes && l.departamento===nl.departamento; });
+          if (!dup) (existing.lotacoes=existing.lotacoes||[]).push(nl);
+        });
+        existing.atualizadoEm = new Date().toISOString();
+        atualizados++;
+      } else {
+        data.id = Date.now().toString() + Math.random().toString(36).slice(2,6);
+        data.atualizadoEm = new Date().toISOString();
+        funcionariosDb.push(data);
+        importados++;
+      }
+    });
+
+    salvarFuncionariosDb();
+    document.getElementById('modalImportFunc').style.display = 'none';
+    renderFuncionarios();
+    alert('Importação concluída!\n\n✅ Novos: ' + importados + '\n🔄 Atualizados: ' + atualizados);
+  }
+
+  // ── EXPORT CSV ───────────────────────────────────────────────────────────
+  function exportarFuncCSV() {
+    if (!funcionariosDb.length) { alert('Nenhum funcionário para exportar.'); return; }
+    var lines = ['Matrícula;Nome;Status;E-mail;Admissão;Departamento;Cargo;Centro de Custo;Mês Vigência;Observação'];
+    funcionariosDb.forEach(function(f) {
+      if (!f.lotacoes || !f.lotacoes.length) {
+        lines.push([f.matricula,f.nome,f.status,f.email,f.admissao,'','','','',f.obs].join(';'));
+      } else {
+        f.lotacoes.forEach(function(l) {
+          lines.push([f.matricula,f.nome,f.status,f.email,f.admissao,
+            l.departamento,l.cargo,l.centroCusto,l.mes,l.obs||f.obs].join(';'));
+        });
+      }
+    });
+    var blob = new Blob([lines.join('\n')], {type:'text/csv;charset=utf-8;'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'funcionarios_'+new Date().toISOString().slice(0,10)+'.csv';
+    a.click();
+  }
+
+  function baixarTemplateCSV() {
+    var tmpl = 'Matrícula;Nome;Status;E-mail;Admissão;Departamento;Cargo;Centro de Custo;Mês Vigência;Observação\n'+
+               '12345;Ana Silva;Ativo;ana@empresa.com;2020-03;Sede;Assistente;ADM;2020-03;Admissão\n'+
+               '12345;Ana Silva;Ativo;ana@empresa.com;2020-03;Filial SP;Coordenadora;COM;2026-06;Transferência\n'+
+               '67890;João Costa;Ativo;joao@empresa.com;2019-08;3308;Técnico;TI;2019-08;\n'+
+               '11111;Maria Souza;Afastado;maria@empresa.com;2021-06;Sede;Analista;FIN;2021-06;';
+    var blob = new Blob([tmpl], {type:'text/csv;charset=utf-8;'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'modelo_funcionarios.csv';
+    a.click();
+  }
+
+  // backup patched in original functions below
+
+
+  // ═══════════════════════════════════════════════════════
+  // MÓDULO ANEXOS NO EDITOR
+  // ═══════════════════════════════════════════════════════
+  var editorAnexoAtivo = null;
+
+  function abrirSeletorArquivo(editorId) {
+    editorAnexoAtivo = editorId;
+    var input = document.getElementById('editorFileInput');
+    input.value = '';
+    input.click();
+  }
+
+  function inserirArquivoNoEditor(input) {
+    if (!input.files || !input.files[0] || !editorAnexoAtivo) return;
+    var file = input.files[0];
+    var editor = document.getElementById(editorAnexoAtivo);
+    if (!editor) return;
+
+    var MAX_WARN = 2 * 1024 * 1024; // 2 MB – aviso antes de continuar
+
+    if (file.type.indexOf('image/') === 0) {
+      // Imagem: comprimir e inserir como base64 (igual ao Ctrl+V)
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var img = new Image();
+        img.onload = function() {
+          var c = document.createElement('canvas');
+          var mw = 800, w = img.width, h = img.height;
+          if (w > mw) { h = Math.round(h * mw / w); w = mw; }
+          c.width = w; c.height = h;
+          c.getContext('2d').drawImage(img, 0, 0, w, h);
+          editor.focus();
+          document.execCommand('insertImage', false, c.toDataURL('image/jpeg', 0.75));
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      // Outros arquivos: criar chip de download com base64
+      if (file.size > MAX_WARN) {
+        if (!confirm('Arquivo com ' + (file.size/1024/1024).toFixed(1) + ' MB.\nArquivos muito grandes podem sobrecarregar o armazenamento local. Continuar?')) return;
+      }
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var dataUri = ev.target.result;
+        var nm = file.name;
+        var sz = file.size < 1024 ? file.size + ' B' :
+                 file.size < 1048576 ? (file.size/1024).toFixed(1) + ' KB' :
+                 (file.size/1048576).toFixed(1) + ' MB';
+        var ic = '📄';
+        if (/\.pdf$/i.test(nm))        ic = '📕';
+        else if (/\.xlsx?$/i.test(nm)) ic = '📊';
+        else if (/\.docx?$/i.test(nm)) ic = '📝';
+        else if (/\.csv$/i.test(nm))   ic = '📋';
+        else if (/\.txt$/i.test(nm))   ic = '📃';
+
+        var chip = '<a href="' + dataUri + '" download="' + nm + '" ' +
+          'style="display:inline-flex;align-items:center;gap:6px;' +
+          'background:rgba(56,189,248,.1);border:1px solid #334155;' +
+          'border-radius:6px;padding:6px 10px;color:#38bdf8;' +
+          'text-decoration:none;font-size:.8rem;margin:4px 2px;line-height:1.4;" ' +
+          'contenteditable="false">' +
+          ic + ' ' + nm +
+          ' <span style="font-size:.7rem;opacity:.65">· ' + sz + '</span>' +
+          '</a><br>';
+
+        editor.focus();
+        document.execCommand('insertHTML', false, chip);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+
 </script>
 </body>
 </html>
