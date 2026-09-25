@@ -19,7 +19,7 @@ const typingTexts = [
   '8º periodo de contabilidade',
   'Adventista do Sétimo Dia',
   'Criador de Soluções',
-  'Desenvolvedor Iniciante',
+  'Desenvolvedor',
   'Músico instrumentista',
 ];
 
